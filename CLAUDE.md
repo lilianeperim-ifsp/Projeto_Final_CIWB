@@ -37,5 +37,5 @@ A mensagem descreve só o que mudou no código.
 
 Antes de propor código, leia:
 
-- `docs/contexto/`: enunciado, tvd-api, slides das aulas 10 a 14 e códigos de exemplo do professor (comece pela seção "Padrões do professor" de `codigos-exemplo.md`).
+- `docs/contexto/`: enunciado, tvd-api, slides de todas as aulas (1 a 15) e códigos de exemplo do professor (comece pela seção "Padrões do professor" de `codigos-exemplo.md`).
 - `memory/`: memórias das sessões anteriores da dupla, gravadas pela skill `salvar-memoria`.
