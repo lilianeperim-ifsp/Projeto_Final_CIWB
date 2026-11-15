@@ -340,6 +340,8 @@ Como a Fase 1 é feita em paralelo, os nomes abaixo (funções, IDs e classes) s
 
 **Fase 0 — Alexandre:** branches + passo 1 → PR na `dev`.
 
+> **Acréscimo de 2026-11-15 (esqueleto):** a árvore da seção 2 já foi criada pelo Alexandre e vai junto com a Fase 0. São 18 arquivos vazios, cada um com uma linha de comentário que diz o que é e quem é o dono: `index.html`, os 5 `pages/*.html`, `css/style.css`, os 5 arquivos de `js/` e os 6 de `js/paginas/`. Só `img/` ficou de fora, porque o logo e o favicon são imagens que a Liliane faz. Assim, nos PRs L1, L2, A1 e A2 cada um **preenche** arquivos que já existem na `dev`, em vez de criá-los, e dois PRs nunca criam o mesmo arquivo. O resto do plano não muda: os donos continuam os da seção 7.
+
 **Fase 1 — compartilhados em paralelo** (começa depois do merge da Fase 0; cada arquivo tem um dono só):
 
 | PR | Dono | Passo | O que | Como testar |
