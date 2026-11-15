@@ -1,8 +1,27 @@
 > Origem: `C:\Users\Alexandre Santos\Documents\TSI - IFSP\2º Semestre\ARQCIWB\Material de Aula\Códigos Exemplo\`
 
-# Códigos de exemplo do professor (aulas 9 a 14)
+# Códigos de exemplo do professor (todas as aulas)
 
-Na pasta de códigos, a numeração é diferente da dos slides: `09.eventos` é a aula 10 (Eventos), `10.dom` a aula 11 (DOM), `11.json` a aula 12 (JSON), `12.cookies` e `13.webstorage` a aula 13 (Cookies e localStorage) e `14.validacao` a aula 14 (Validação de Formulários). Os exemplos das aulas 1 a 9 ficam de fora.
+Na pasta de códigos, a numeração não é a mesma dos slides em `docs/contexto/slides/`:
+
+| Pasta de código | Aula (slides) |
+|---|---|
+| `01.helloworld` | 1 — Introdução ao JavaScript |
+| `02.fundamentos` | 2 — Fundamentos do JavaScript (e 3 — Tipos de dados, que não tem pasta própria) |
+| `03.condicional_repeticao` | 4 — Estruturas condicionais e de repetição |
+| `04.funcoes` | 5 — Funções |
+| `05.strings` | 6 — Strings |
+| `06.arrays` | 7 — Arrays |
+| `07.objetos` | 8 — Objetos |
+| `08.date` | 9 — Objeto Date |
+| `09.eventos` | 10 — Eventos |
+| `10.dom` | 11 — DOM |
+| `11.json` | 12 — JSON |
+| `12.cookies` e `13.webstorage` | 13 — Cookies e localStorage |
+| `14.validacao` | 14 — Validação de Formulários |
+| `15.regex` | 15 — Expressões Regulares |
+
+Os códigos estão copiados como estão, inclusive com os erros de digitação do original (por exemplo, `console.lg` em `01.helloworld/index.html` e `id="nome"]` em `14.validacao/exemplo3.html`).
 
 ## Padrões do professor
 
@@ -82,9 +101,919 @@ for (let pessoa of cadastro){
 
 **Organização dos arquivos:** HTML com `<!DOCTYPE html>`, `lang="pt-BR"` (às vezes `pt-br`), `meta charset` e `viewport`; `header`/`main` nos exemplos maiores; `<label for>` em todo campo; `<script src>` comum no fim do `<body>` (nunca `type="module"`, `import` ou `export`); nos exemplos com pastas, o JS fica em `js/script.js`.
 
+**Datas** (`08.date`): a data no formato `AAAA-MM-DD` é separada com `split('-')` e montada com `new Date(ano, mes - 1, dia)`, e a exibição usa `toLocaleDateString('pt-br')`.
+
+```js
+[ano, mes, dia] = nasc.split('-');
+
+mes = mes - 1;
+
+const meunasc = new Date(ano, mes ,dia);
+
+console.log(meunasc.toLocaleDateString('pt-br'));
+```
+
+**Expressões regulares** (`15.regex`): literal `/padrao/flags` com `i` e `g`, âncoras `^...$` para validar (`/^\d{5}-\d{3}$/`), `test()` para validar e `replace()` com grupos `$1`, `$2` para reformatar.
+
+**Entrada e saída nas primeiras aulas** (`02` a `08`): `prompt()`, `alert()` e `console.log()`, com `Number(...)` para converter o que vem do `prompt`. Template strings com `${...}` aparecem a partir de `05.strings` e arrow functions em callbacks curtos (`numerico.sort((a, b) => a - b)`).
+
 **Nomes:** variáveis e funções em camelCase. Em português na maioria (`botCadastrar`, `divCadastrados`, `novaPessoa`, `imprimeMensagem`, `mudaCor`, `dataExpiracao`, `erroNome`). Em inglês quando o exemplo segue a API usada (`getAddress`, `getUserData`, `showUserData`, `getCookie`). Comentários em português, explicando cada etapa em minúsculas (`// obtém o JSON da Promise`). Indentação de 4 espaços, linha em branco depois de abrir a função e `else` em linha própria depois de `}`.
 
 ---
+
+### 01.helloworld
+
+Primeiro script: console.log em um <script> dentro do HTML (com o erro de digitação console.lg do original) e em um arquivo script.js separado.
+
+`01.helloworld/index.html`
+
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hello world</title>
+</head>
+<body>
+    
+    <script>
+       console.lg('Hello world!'); 
+    </script>
+
+</body>
+</html>
+```
+
+`01.helloworld/script.js`
+
+```js
+console.log('Hello!');
+```
+
+### 02.fundamentos/exemplo1
+
+JavaScript externo: um console.log em um arquivo .js ligado pelo <script src>.
+
+`02.fundamentos/exemplo1.html`
+
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fundamentos</title>
+</head>
+<body>
+ 
+    <!-- JS externo -->
+    <script src="./exemplo1.js"></script>
+
+    <!-- JS interno -->
+    <script>
+        console.log('JS interno');
+    </script>
+
+    <!-- Apenas o JS externo será executado  -->
+    <script src="./exemplo1.js">
+        console.log('JS interno');
+    </script>
+
+</body>
+</html>
+```
+
+`02.fundamentos/exemplo1.js`
+
+```js
+console.log('JS externo');
+```
+
+### 02.fundamentos/exemplo2
+
+Saída de dados (textContent, alert, console.log) e entrada com prompt, convertendo o valor com Number().
+
+`02.fundamentos/exemplo2.html`
+
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrada e saída de dados</title>
+</head>
+<body>
+    
+    <p id="msg"></p>
+
+    <script src="./exemplo2.js"></script>
+</body>
+</html>
+```
+
+`02.fundamentos/exemplo2.js`
+
+```js
+// escrever em um elemento HTML
+// document.querySelector('#msg').textContent = 'Olá';
+
+// window.alert()
+// window.alert('Olá alert!');
+// alert('Olá sem window!');
+
+// console.log()
+// console.log('Olá console!');
+
+// Entrada de dados
+
+// window.prompt()
+let idade = Number(prompt('Digite sua idade', 20));
+alert(idade);
+// função Number converte string para número
+
+
+let nome = prompt('Qual é o seu nome?');
+alert(nome);
+
+```
+
+### 02.fundamentos/exemplo3
+
+Variáveis com let, var e const: escopo de bloco e alteração de elementos de um array const.
+
+`02.fundamentos/exemplo3.html`
+
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Variáveis</title>
+</head>
+<body>
+    <script src="./exemplo3.js"></script>
+</body>
+</html>
+```
+
+`02.fundamentos/exemplo3.js`
+
+```js
+// Variáveis
+
+// let
+
+// let x; // undefined
+// x = 45;
+
+// let y = 34;
+
+// let nome;
+
+// {
+//     nome = 'Maria';
+// }
+
+// alert(nome);
+
+// let idade = Number(prompt('Digite sua idade',0));
+
+// if (idade > 17){
+//     var msg = 'Maior de idade';
+// }
+
+// alert(msg);
+
+// const
+
+// const x = 10;
+// x = 20;
+
+//const nome = prompt('Digite seu nome');
+
+const frutas = ['banana', 'maçã', 'mamão'];
+frutas[1] = 'abacate';
+
+alert(frutas);
+```
+
+### 02.fundamentos/exemplo4
+
+Operadores: exponenciação, + com strings e números e operador ternário.
+
+`02.fundamentos/exemplo4.html`
+
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operadores</title>
+</head>
+<body>
+    <script src="./exemplo4.js"></script>
+</body>
+</html>
+```
+
+`02.fundamentos/exemplo4.js`
+
+```js
+// exponenciação
+let x = 2**3; // 8
+
+// operador +
+// let y = 4 + 7; // 11
+
+// let codigo = 'ABC' + 5; //'ABC5'
+// let msg = 4 + 'ever'; // '4ever'
+
+// let nome = 'Joana';
+// let sobrenome = 'Silva';
+
+// msg = 'Olá, ' + nome + ' ' + sobrenome + '!';
+// alert(msg); // 'Olá, Joana Silva!'
+
+let idade = Number(prompt('Sua idade', 18));
+
+alert(idade < 18 ? 'Menor de idade' : 'Maior de idade');
+```
+
+### 03.condicional_repeticao/exemplo1
+
+if/else com Math.random() para trocar o href e o texto de um link selecionado com querySelector.
+
+`03.condicional_repeticao/exemplo1.html`
+
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Condicional</title>
+</head>
+<body>
+    
+    <a href="" id="meulink"></a>
+
+    <script src="./exemplo1.js"></script>
+</body>
+</html>
+```
+
+`03.condicional_repeticao/exemplo1.js`
+
+```js
+// acessa o elemento <a> cujo atributo id = 'meulink'
+let meulink = document.querySelector('#meulink');
+
+// O método random gera um número aleatório no intervalo
+// [0,1)
+if (Math.random() < 0.5){
+    meulink.href = 'http://www.globo.com';
+    meulink.textContent = 'Globo.com';
+}
+else{
+    meulink.href= 'http://www.uol.com.br';
+    meulink.textContent = 'UOL';
+}
+```
+
+### 03.condicional_repeticao/exemplo2
+
+Jogo de dado: número aleatório de 1 a 6 com Math.floor e comparação com a aposta lida por prompt.
+
+`03.condicional_repeticao/exemplo2.html`
+
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo do dado</title>
+</head>
+<body>
+   <script src="./exemplo2.js"></script> 
+</body>
+</html>
+```
+
+`03.condicional_repeticao/exemplo2.js`
+
+```js
+// gera um numero aleatório entre 1 e 6
+let dado = Math.floor(Math.random()*6) + 1;
+ 
+console.log(dado);
+
+let aposta = Number(prompt('Digite sua aposta', 0));
+
+if (dado == aposta){
+    alert('Você acertou!');
+}
+else{
+    alert('Você errou! O valor do dado é ' + dado);
+}
+```
+
+### 04.funcoes/exemplo1
+
+Declaração e invocação de funções, argumentos faltando (NaN) e valor padrão com o operador ??=.
+
+`04.funcoes/exemplo1.html`
+
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Funções</title>
+</head>
+<body>
+    
+    <script src="exemplo1.js"></script>
+
+</body>
+</html>
+```
+
+`04.funcoes/exemplo1.js`
+
+```js
+// function imprimeMsg(){
+//     alert('Boa noite!');
+// }
+
+// // invocação da função
+// imprimeMsg();
+
+
+function soma(x, y){
+    return x + y
+}
+
+function soma2(x, y){
+    // nullish coalescing: se o valor de x for undefined ou nulo (null), x receberá o valor 5. 
+    x ??= 5;
+    y ??= 10;
+
+    return x + y;
+}
+
+// alert(soma(2, 3)); // 5
+// alert(soma(2)); // NaN: Not a Number
+// alert(soma()); // NaN
+// alert(soma(1, 2, 3)); // 3, ignora o 3o argumento
+
+alert(soma2(8,6)); // 14
+alert(soma2(8)); // 18
+alert(soma2()); // 15
+```
+
+### 04.funcoes/exemplo2
+
+Parâmetros rest, objeto arguments e passagem por valor (número) e por referência (array).
+
+`04.funcoes/exemplo2.html`
+
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Funções</title>
+</head>
+<body>
+    <script src="./exemplo2.js"></script>
+</body>
+</html>
+```
+
+`04.funcoes/exemplo2.js`
+
+```js
+// parametros rest
+
+// function nomeCompleto(...args){
+
+//     let nome = '';
+//     for(let n of args){
+//         nome += n + ' ';
+//     }
+
+//     return nome;
+// }
+
+// objeto arguments
+
+// function nomeCompleto(){
+
+//     let nome = '';
+//     // length: quantidade de argumentos passados para a função
+//     for(let i = 0; i < arguments.length; i++){
+//         nome += arguments[i] + ' ';
+//     }
+
+//     return nome;
+// }
+
+// alert(nomeCompleto('João', 'Silva')); // João Silva
+// alert(nomeCompleto('Maria', 'Pereira', 'Alves')); // Maria Pereira Alves
+// alert(nomeCompleto('José')); // José
+
+function alteraVariavel(x){
+    x = 10;
+}
+
+function alteraArray(x){
+    x[0] = 'XPTO';
+}
+
+let a = 7;
+
+alteraVariavel(a); 
+alert(a); // 7
+
+let b = ['banana', 'mamão', 'maçã'];
+alteraArray(b);
+alert(b); // XPTO,mamão,maçã
+```
+
+### 04.funcoes/exemplo3
+
+Funções anônimas, arrow functions e callbacks: a mesma mensagem impressa por alert, console e DOM.
+
+`04.funcoes/exemplo3.html`
+
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Funções</title>
+</head>
+<body>
+    <script src="./exemplo3.js"></script>
+</body>
+</html>
+```
+
+`04.funcoes/exemplo3.js`
+
+```js
+// funções anônimas
+
+// function soma(a,b){
+//     return a + b;
+// }
+
+// let soma = function(a,b){
+//     return a + b;
+// };
+
+// let soma = (a, b) => a + b;
+
+// console.log(soma(3,4));
+
+// let concatena = soma;
+
+// console.log(concatena('Arara', 'quara'));
+
+// let msg = nome => {
+//     texto = 'Olá, ';
+//     texto += nome;
+//     alert(texto);
+// }
+
+// msg('Neymar Jr.');
+
+
+// Callback
+
+function printAlert(msg){
+    alert('Alert: ' + msg);
+}
+
+function printConsole(msg){
+    console.log('Console: ' + msg);
+}
+
+function printDOM(msg){
+    document.body.textContent = 'DOM: ' + msg;
+}
+
+function print(msg, printFunction){
+    printFunction(msg);
+}
+
+print('Moraes', printConsole);
+print('Oliva', printAlert);
+print('Arnaldo', printDOM);
+
+print('Boa noite', function(m){
+    console.log('Anonimo: ' + m);
+});
+
+print('Olá seta!', m => {alert('Arrow: ' + m);});
+
+
+
+```
+
+### 05.strings/exemplo1
+
+Template strings, acesso a caracteres ([], at, charAt), slice e substring, replace com regex, split, indexOf, match e endsWith.
+
+`05.strings/exemplo1.html`
+
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strings</title>
+</head>
+<body>
+    <h1 id="titulo"></h1>
+    <script src="./exemplo1.js"></script>
+</body>
+</html>
+```
+
+`05.strings/exemplo1.js`
+
+```js
+// const nome = 'João';
+// const sobrenome = 'Pereira';
+
+// let msg = `Olá, ${nome} ${sobrenome}. Seja bem-vindo!`;
+
+// document.querySelector('#titulo').textContent = msg;
+
+// let nome = 'Karina';
+
+// nome[0] = 'M';
+
+// console.log(nome);
+
+// const carro = 'Opala';
+
+// console.log(carro[2]); // a
+// console.log(carro.at(3)); // l
+// console.log(carro.charAt(1)); // p
+
+// console.log(carro[6]); // undefined
+// console.log(carro.at(6)); // undefined
+// console.log(carro.charAt(6)); // string vazia
+
+// console.log(carro[-1]); // undefined
+// console.log(carro.at(-1)); // a
+// console.log(carro.charAt(-1)); // string vazia
+
+// // como imprimir o ultimo caractere utilizando []?
+// console.log(carro[carro.length-1]);
+
+// const nomeArquivo = 'churrasco.png';
+
+// //const extensao = nomeArquivo.slice(10); // do 10 até o fim
+// const extensao = nomeArquivo.slice(-3); // do -3 até o fim
+// //const nomefoto = nomeArquivo.substring(0, 9);
+// const nomefoto = nomeArquivo.substring(0, nomeArquivo.length-4);
+// console.log(extensao);
+// console.log(nomefoto);
+
+// replace
+
+const texto = `O tempo perguntou para o TEMPO: quanto Tempo o tempo tem?...`
+
+// const novoTexto = texto.replace('tempo', 'clima');
+//const novoTexto = texto.toLowerCase().replaceAll('tempo', 'clima');
+// const novoTexto = texto.replace(/tempo/ig, 'clima');
+
+// console.log(novoTexto);
+
+// //const arrayTexto = texto.split("");
+// // const arrayTexto = texto.split(" ");
+// const arrayTexto = texto.split(":");
+
+// console.log(arrayTexto);
+
+// console.log(texto.indexOf('tempo'));// 2
+// console.log(texto.lastIndexOf('tempo'));// 47
+
+// console.log(texto.match(/tempo/ig));
+
+let nomeArquivo = 'Trabalho.pdf';
+
+if (nomeArquivo.endsWith('.pdf')){
+    console.log('Esse arquivo está no formato PDF');
+}
+```
+
+### 06.arrays/exemplo1
+
+Métodos de array (reverse, sort, includes, splice, concat, push, pop, shift, unshift), montagem de lista HTML com for...of e sort numérico.
+
+`06.arrays/exemplo1.html`
+
+```html
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arrays</title>
+</head>
+<body>
+    
+    <h1>Arrays em JavaScript</h1>
+    <hr>
+
+    <ul id="frutas">
+
+    </ul>
+
+    <script src="./exemplo1.js"></script>
+
+</body>
+</html>
+```
+
+`06.arrays/exemplo1.js`
+
+```js
+// const frutas = ['Maçã', 'Tomate', 'Pera', 'Melancia', 'Banana'];
+
+// console.log(frutas);
+
+// frutas.reverse();
+
+// console.log(frutas);
+
+// frutas.sort();
+
+// console.log(frutas);
+
+// if (frutas.includes('Banana')){
+//     alert('Temos banana no índice ' + frutas.indexOf('Banana'));
+// }
+
+
+
+// splice
+
+// remover 2 elementos do array a partir da posição 1
+// frutas.splice(1, 2);
+
+// adicionar 2 elementos no array no indice 2
+//frutas.splice(2, 0, 'Uva', 'Maracujá'); 
+
+// substituir Pera e Melancia por Uva e Maracuja
+//frutas.splice(2, 2, 'Uva', 'Maracujá')
+
+// const outrasFrutas = ['Uva', 'Pêssego'];
+
+// const novasFrutas = frutas.concat(outrasFrutas);
+
+// console.log(novasFrutas);
+
+// frutas.push('Banana');
+// frutas.unshift('Morango');
+
+// console.log(frutas.pop()); // Banana
+// console.log(frutas.shift()); // Morango
+
+// gerar a lista no HTML utilizando for
+
+// let texto = '';
+
+// // for(let i = 0; i < frutas.length; i++){
+
+// //     texto += `<li>${frutas[i]}</li>`;
+// // }
+
+// //frutas.forEach((fruta) => {texto += `<li>${fruta}</li>`});
+
+// for (let fruta of frutas){
+//     texto += `<li>${fruta}</li>`;
+// }
+
+
+// // acessa a <ul> no HTML e coloca o texto dentro da tag
+// document.querySelector('#frutas').innerHTML = texto;
+
+const numerico = [4, 1, 8, 23, 45, 100, 10, 5];
+
+console.log(numerico);
+
+console.log(numerico.sort((a, b) => a - b)); // ascendente
+console.log(numerico.sort((a, b) => b - a)); // descendente
+```
+
+### 07.objetos/exemplo1
+
+Objeto literal com objeto aninhado e método, for...in, Object.entries, função construtora e classe com get e set.
+
+`07.objetos/exemplo1.html`
+
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Objetos JS</title>
+</head>
+<body>
+    <script src="./exemplo1.js"></script>
+</body>
+</html>
+```
+
+`07.objetos/exemplo1.js`
+
+```js
+// const corinthians = {
+//     nome: "Corinthians",
+//     prefixo: "Sport Club",
+//     sufixo: "Paulista",
+//     timeTitular: {
+//         goleiro: 'Hugo Souza',
+//         zagueiro: 'Gabriel Paulista',
+//         atacante: 'Memphis Depay'
+//     },
+//     nomeCompleto: function(){
+//         return `${this.prefixo} ${this.nome} ${this.sufixo}`;
+//     }
+// };
+
+// console.log(corinthians.timeTitular.goleiro);
+// console.log(corinthians.timeTitular['zagueiro']);
+// console.log(corinthians['timeTitular']['atacante']);
+
+// for(let x in corinthians){
+//     console.log(corinthians[x]);
+// }
+
+// for (let [prop, val] of Object.entries(corinthians)){
+//     console.log(`${prop} --> ${val}`);
+// }
+
+// corinthians.hino = 'Salve o Corinthians ...';
+
+// console.log(corinthians.nome);
+// console.log(corinthians['hino']);
+
+// let b = 'prefixo';
+
+// console.log(corinthians[b]);
+
+// console.log(corinthians.nomeCompleto());
+
+
+// Função construtora
+
+// function Time(nome, prefixo, sufixo){
+//     this.nome = nome;
+//     this.prefixo = prefixo;
+//     this.sufixo = sufixo;
+
+//     this.nomeCompleto = function(){
+//         return `${this.prefixo} ${this.nome} ${this.sufixo}`.trim();
+//     }
+// }
+
+class Time{
+
+    constructor(nome, prefixo, sufixo){
+        this.nome = nome;
+        this.prefixo = prefixo;
+        this.sufixo = sufixo;
+        this.hino = '';
+    }
+
+    nomeCompleto(){
+        return `${this.prefixo} ${this.nome} ${this.sufixo}`.trim();
+    }
+
+    get getHino(){
+        return this.hino;
+    }
+
+    set setHino(x){
+
+        this.hino = x.trim();
+    }
+}
+
+const palmeiras = new Time('Palmeiras', 'Sociedade Esportiva', '');
+const saopaulo = new Time('São Paulo', '', 'Futebol Clube');
+const santos = new Time('Santos', '', 'Futebol Clube');
+const corinthians = new Time('Corinthians', 'Sport Club', 'Paulista');
+
+palmeiras.setHino = 'Quando surge o alviverde imponente...';
+
+console.log(palmeiras.getHino);
+
+
+// console.log(palmeiras.nomeCompleto());
+// console.log(saopaulo.nomeCompleto());
+// console.log(santos.nomeCompleto());
+// console.log(corinthians.nomeCompleto());
+
+
+```
+
+### 08.date/exemplo1
+
+Objeto Date: data de nascimento lida de um input date e separada com split, nomes de mês e dia da semana e cálculo de prazo de entrega com getTime().
+
+`08.date/exemplo1.html`
+
+```html
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Objeto Date</title>
+</head>
+<body>
+
+    <label for="nasc">Data de nascimento</label><br>
+    <input type="date" name="nasc" id="nasc">
+    
+    <script src="./exemplo1.js"></script>
+
+</body>
+</html>
+```
+
+`08.date/exemplo1.js`
+
+```js
+// Objeto Date
+
+// const hoje = new Date();
+
+// console.log(hoje);
+
+// const data = new Date(1000000000000); 
+
+// console.log(data);
+
+
+function dataNascimento(){
+    let nasc = document.querySelector('#nasc').value;
+
+    console.log(nasc);
+
+    // desestruturação
+    [ano, mes, dia] = nasc.split('-');
+
+    mes = mes - 1;
+ 
+    //const meunasc = new Date(nasc);
+    const meunasc = new Date(ano, mes ,dia);
+
+    console.log(meunasc.toLocaleDateString('pt-br'));
+
+    const meses = ['janeiro', 'fevereiro', 'março', 'abril',
+                   'maio', 'junho', 'julho', 'agosto', 'setembro',
+                   'outubro', 'novembro', 'dezembro'];
+
+    let texto = `Você nasceu em ${meunasc.getDate()} de ${meses[meunasc.getMonth()]} de ${meunasc.getFullYear()}`;
+
+    console.log(texto);
+
+    const diassemana = ['domingo', 'segunda-feira', 'terça-feira', 'quarta-feira', 'quinta-feira', 'sexta-feira', 'sábado'];
+
+    texto = `O dia em que você nasceu era ${diassemana[meunasc.getDay()]}`;
+
+    console.log(texto);
+}
+
+
+const agora = new Date();
+
+const prazoFrete = 7;
+
+const entrega = new Date(agora.getTime() + (prazoFrete * 24 * 60 * 60 * 1000));
+
+let texto = `A data da compra foi ${agora.toLocaleDateString('pt-br')}. A data da entrega será ${entrega.toLocaleDateString('pt-br')}`;
+
+console.log(texto);
+```
 
 ### 09.eventos/exemplo1
 
@@ -1186,4 +2115,180 @@ form.addEventListener('submit', function(e){
     }
 
 });
+```
+
+### 15.regex/exemplo1
+
+Criação de regex literal com as flags i e g e os métodos replace, search, match, exec e test.
+
+`15.regex/exemplo1.js`
+
+```js
+const texto = `Estou aprendendo a desenvolver sistemas no curso de Sistemas para Internet`;
+
+// Duas formas de criar uma expressão regular
+
+//const padrao = new RegExp('sistemas');
+const padrao1 = /sistemas/;
+const padrao2 = /Sistemas/;
+const padrao3 = /SISTEMAS/;
+const padrao4 = /SISTEMAS/i; // ignore case
+const padrao5 = /SISTEMAS/ig; // ignore case + global
+
+// replace() --> substituir o padrao
+let novoTexto = texto.replace(padrao1, 'programas');
+console.log(novoTexto);
+
+
+// método search() --> retorna o índice da primeira ocorrência
+//console.log(texto.search(padrao2)); // 52
+//console.log(texto.search(padrao3)); // -1
+//console.log(texto.search(padrao5)); // 31
+
+// método match()
+//console.log(texto.match(padrao1));
+//console.log(texto.match(padrao5));
+
+// método exec()
+//console.log(padrao1.exec(texto));
+//console.log(padrao3.exec(texto));
+//console.log(padrao4.exec(texto));
+//console.log(padrao5.exec(texto));
+//console.log(padrao5.exec(texto));
+
+// let resultado;
+
+// while((resultado = padrao5.exec(texto)) != null){
+
+//     console.log(`Encontrou ${resultado[0]} no índice ${resultado.index}`);
+// }
+
+
+// método test(): retorna true ou false
+// console.log(padrao1.test(texto)); // true
+// console.log(padrao2.test(texto)); // true
+// console.log(padrao3.test(texto)); // false
+// console.log(padrao4.test(texto)); // true
+
+
+
+
+```
+
+### 15.regex/exemplo2
+
+Conjuntos com colchetes e validação de CEP com o padrão ancorado /^\d{5}-\d{3}$/.
+
+`15.regex/exemplo2.js`
+
+```js
+// brackets []
+
+// const padrao1 = /[0-9]/;
+// const padrao2 = /[a-z]/;
+// const padrao3 = /[a-zA-Z]/;// encontro qqer letra, maiuscula ou minuscula
+// const padrao4 = /[A-Za-z0-9]/; // letras minusculas + digitos de 0 a 9
+
+// let texto1 = 'a';
+// let texto2 = '5';
+
+// console.log(padrao1.test(texto1)); // false
+// console.log(padrao1.test(texto2)); // true 
+
+// console.log(padrao2.test(texto1)); // true
+// console.log(padrao2.test(texto2)); // false 
+
+const texto = 'Meu CEP é 12345-123';
+const texto2 = '12349-098';
+
+const padCEP = /^\d{5}-\d{3}$/;
+
+console.log(padCEP.test(texto)); // false
+console.log(padCEP.test(texto2)); // true
+
+```
+
+### 15.regex/exemplo3
+
+Atributo pattern com regex para CEP, CPF, RG e prontuário, e formatação do CEP no blur com replace e grupos $1-$2.
+
+`15.regex/exemplo3.html`
+
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expressão regular</title>
+</head>
+<body>
+    
+    <h1>Validação de formulários com RegEx</h1>
+
+    <hr>
+
+    <form action="">
+
+        <p>
+            <label for="cep">CEP</label><br>
+            <input type="text" name="cep" id="cep" 
+            pattern="\d{5}-?\d{3}">
+        </p>
+
+        <p>
+            <label for="cpf">CPF</label><br>
+            <input type="text" name="cpf" id="cpf"
+            pattern="(\d{3}\.?){2}\d{3}-?\d{2}">
+        </p>
+
+        <p>
+            <label for="rg">RG</label><br>
+            <input type="text" name="rg" id="rg" 
+            pattern="\d{2}\.?\d{3}\.?\d{3}-?[\dxX]">
+        </p>
+
+        <p>
+            <label for="prontuario">Prontuário</label>
+            <input type="text" name="prontuario" id="prontuario"
+            pattern="[a-zA-Z]{2}\d{6}[\dxX]">
+        </p>
+
+        <button type="submit">Enviar</button>
+    </form>
+
+    <script>
+
+        const cep = document.querySelector('#cep');
+
+        cep.addEventListener('blur', function(){
+
+
+            const padrao = /^(\d{5})-?(\d{3})$/;
+
+            cep.value = cep.value.replace(padrao, '$1-$2');
+
+        });
+
+    </script>
+
+</body>
+</html>
+```
+
+### 15.regex/exemplo4
+
+Inversão de "Sobrenome, Nome" com grupos de captura e replace($2 $1).
+
+`15.regex/exemplo4.js`
+
+```js
+
+const citacao = 'Silva, Marcos'; // --> Marcos Silva
+
+const er = /^([a-zA-Z]+),\s([a-zA-Z]+)$/
+
+const nome = citacao.replace(er, '$2 $1');
+
+console.log(nome);
 ```
