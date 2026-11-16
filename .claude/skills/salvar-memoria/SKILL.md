@@ -41,16 +41,17 @@ Dúvidas em aberto e coisas que dependem da outra pessoa da dupla ou do professo
 O que fazer na próxima sessão.
 ```
 
-6. **Enviar:** o Claude não roda `git add`, `git commit` nem `git push`. Mande ao usuário um bloco com os comandos, um por linha, para ele rodar um de cada vez:
+6. **Enviar:** o Claude não roda `git add` nem `git commit`. Mande ao usuário um bloco com os comandos, um por linha, para ele rodar um de cada vez:
 
 ```bash
 git status
 git add memory/AAAA-MM-DD-assunto-principal.md
 git commit -m "Memória da sessão: <assunto>"
-git push
 ```
 
    A mensagem do commit é só essa: sem linha `Co-Authored-By` e sem rodapé citando Claude ou IA.
+
+   Quando o usuário avisar que fez o commit, execute `git push` (sem `--force`) e confira com `git status -sb` se a branch ficou igual à do GitHub.
 
 7. **Avisar o usuário:** informe o caminho do arquivo criado.
 
