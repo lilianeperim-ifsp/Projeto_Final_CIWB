@@ -14,6 +14,18 @@ O caminho é sempre `trabalho/<usuario-github>` → PR → `dev` → testes → 
 
 O Claude não roda `git add`, `git commit`, `git push` nem `git pull`, e não abre PR. Quem faz isso é o usuário.
 
+O Claude pode rodar só comandos de leitura: `git status`, `git diff`, `git log`, `git branch` (só para listar) e `git fetch`.
+
+O Claude nunca:
+
+- roda `git merge`, `git rebase` ou `git reset`;
+- usa `git push --force` nem `--force-with-lease`;
+- apaga branch ou tag;
+- mexe na branch da outra pessoa da dupla;
+- resolve conflito, descarta alterações ou aborta um merge sem o usuário pedir. Se algo der errado, ele para, mostra o problema e explica as opções, e quem executa é o usuário.
+
+Essas regras também estão travadas no `.claude/settings.json` (lista `deny`). O Claude Code recusa esses comandos antes de rodar, mas a trava só compara o começo do comando, então a regra deste arquivo continua valendo para qualquer outra forma de escrever.
+
 Ao terminar cada passo, mande um bloco com os comandos git desse passo, um comando por linha, para o usuário rodar um de cada vez: primeiro `git status`, depois um `git add` para cada arquivo (nunca `git add .` nem `-A`), o `git commit` com a mensagem e o `git push`. Quando for hora de PR, o comando ou o link para abrir vai no mesmo bloco. Exemplo:
 
 ```bash
