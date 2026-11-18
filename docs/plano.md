@@ -214,6 +214,8 @@ Um modal só, criado pelo `ui.js` na primeira abertura. O conteúdo é uma `<dl>
 | Espécie | nome, descrição, lista de personagens | `characters[]` → nomes |
 | Família | nome, "Fundadora de Mystic Falls: Sim/Não", descrição, lista de personagens | `characters[]` → nomes |
 
+**Campos vazios:** vários personagens vêm com `episodeCount: null` (Elijah, Rebekah e outros sem foto). Nesse caso o modal mostra "Não informado" no lugar do número.
+
 **Foto (D5):** a regra olha o próprio item, não uma lista fixa nem uma contagem. Se `image` vier preenchido, aparece a foto; se vier `null`, aparecem as iniciais. Se a tvd-api ganhar mais fotos, o site passa a mostrar sem nenhuma mudança no código.
 
 ### Ponto 8 — Lista (RF04)
@@ -235,7 +237,7 @@ Bootstrap pela CDN do jsDelivr, fixo na **5.3.3**:
 - no `<head>`: `https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css`, depois `style.css`;
 - no fim do `<body>`, antes dos nossos scripts: `https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js` (traz o Popper, necessário para o modal e o menu recolhível).
 
-O site tem modo claro e modo escuro, trocados pelo `data-bs-theme` (`"light"`/`"dark"`) no `<html>`, com a paleta "Grimório" (vinho com dourado) e o nome "Diários de Mystic Falls" (D7). Na primeira visita segue o tema do sistema; o botão de tema no menu troca e salva a escolha. Cores, contraste e o CSS pronto estão em `docs/identidade-visual.md`.
+O site tem modo claro e modo escuro, trocados pelo `data-bs-theme` (`"light"`/`"dark"`) no `<html>`, com a paleta "Grimório" (vinho com dourado) e o nome "Diários de Mystic Falls" (D7). Na primeira visita segue o tema do sistema; o botão de tema no menu troca e salva a escolha. Cores, contraste e o CSS pronto estão em `docs/identidade-visual.md`, junto com o design das páginas: Cinzel nos títulos e Lato no texto (Google Fonts), cards com sombra, foto 4:5 no topo do card, iniciais em vinho, item ativo do menu sublinhado em dourado e detalhes do modal em duas colunas.
 
 ---
 
@@ -267,10 +269,14 @@ Como a Fase 1 é feita em paralelo, os nomes abaixo (funções, IDs e classes) s
 - `mostrarCarregando(texto)` / `esconderCarregando()` em `#estado`
 - `mostrarErro(mensagem)`: alerta com "Tentar novamente"
 - `mostrarLista(itens, montarCard, aoClicar)`: limpa `#lista`, um `<li class="col">` por item
-- `criarCard(titulo, linhas, imagem, alt)` → `<button class="card-recurso">` com card Bootstrap; `imagem === null` → `criarIniciais(titulo)`
+- `criarCard(titulo, linhas, imagem, alt, ehPoster)` → `<button type="button" class="card-recurso">` com um `.card` Bootstrap dentro (classes do design em `docs/identidade-visual.md`):
+  - título em `.card-title`; `linhas` são textos ou elementos (o selo `<span class="selo-fundadora">Fundadora</span>` das famílias entra como elemento);
+  - `imagem` com URL → `<img class="card-img-top foto-recurso">`, mais `.poster` quando `ehPoster` (temporadas);
+  - `imagem === null` → `criarIniciais(titulo)`;
+  - `imagem` não passada (episódios, espécies e famílias) → card sem mídia
 - `criarIniciais(nome)` → `<div class="iniciais" role="img" aria-label="Sem foto de …">`
-- `abrirModal(titulo, conteudo)`: cria o modal na primeira vez, preenche e chama `bootstrap.Modal.getOrCreateInstance(...).show()`; chamado com o modal aberto, só troca o conteúdo
-- `criarSpinner(texto)`, `criarListaDetalhes(pares)` → `<dl class="row">`, `criarListaDeNomes(nomes)` → `<ul>`/`<ol>`
+- `abrirModal(titulo, conteudo)`: cria o modal `.modal-lg` (título em `.modal-title`) na primeira vez, preenche e chama `bootstrap.Modal.getOrCreateInstance(...).show()`; chamado com o modal aberto, só troca o conteúdo. A foto do modal é `<img class="foto-detalhe">`, ou as iniciais
+- `criarSpinner(texto)`, `criarListaDetalhes(pares)` → `<dl class="row">` com `<dt class="col-sm-4">` e `<dd class="col-sm-8">`, `criarListaDeNomes(nomes)` → `<ul>`/`<ol>`
 - `formatarData(dataIso)` → `'10/09/2009'` com `split('-')`. **Não** usar `new Date('2009-09-10')`: o texto é lido como UTC e, no fuso do Brasil, a data apareceria como 09/09.
 
 ### Parte da Liliane
@@ -293,7 +299,7 @@ Como a Fase 1 é feita em paralelo, os nomes abaixo (funções, IDs e classes) s
 ```html
 <!DOCTYPE html>
 <html lang="pt-BR" data-bs-theme="dark">
-<head> charset, viewport, <title>Personagens | Diários de Mystic Falls</title>, favicon ../img/favicon.png, CSS do Bootstrap, ../css/style.css, <script src="../js/tema.js"></script> </head>
+<head> charset, viewport, <title>Personagens | Diários de Mystic Falls</title>, favicon ../img/favicon.png, CSS do Bootstrap, <link> das fontes Cinzel e Lato (Google Fonts), ../css/style.css, <script src="../js/tema.js"></script> </head>
 <body>
     <header><nav id="menu" class="navbar navbar-expand-lg" aria-label="Menu principal"></nav></header>
     <main class="container py-4">
@@ -317,9 +323,9 @@ O `data-bs-theme="dark"` escrito no `<html>` é a reserva para quando o JavaScri
 
 **`js/paginas/x.js` mínimos** (criados pela Liliane no PR L1, para o layout funcionar desde o início): só `window.onload = function(){ montarLayout('x', '../'); };`. Depois do merge do L1, cada arquivo passa para o dono da página, que completa o resto.
 
-**`css/style.css`** estiliza, além do tema: `.card-recurso` (o botão que envolve o card), `.iniciais` (círculo com as iniciais) e o destaque do menu ativo.
+**`css/style.css`** estiliza, além do tema: `.card-recurso` (o botão que envolve o card), `.foto-recurso` e `.poster`, `.iniciais` (bloco 4:5 com as iniciais), `.selo-fundadora`, `.contagem`, `.foto-detalhe`, o modal e o destaque do menu ativo. O CSS pronto está em `docs/identidade-visual.md`, seções da paleta e do design das páginas.
 
-**`js/paginas/inicio.js`**: `montarLayout('inicio', '')` e os cinco cards com o `count` vindo de `buscarComCache(URL_API + '/' + recurso)`, que é do `api.js`, pronto no PR A1.
+**`js/paginas/inicio.js`**: `montarLayout('inicio', '')` e os cinco cards com o `count` vindo de `buscarComCache(URL_API + '/' + recurso)`, que é do `api.js`, pronto no PR A1. Cada card é um `<a class="card-recurso">` para a página do recurso, com o número em `.contagem`, o nome em `.card-title` e "Ver todos", numa grade `row-cols-1 row-cols-sm-3 row-cols-lg-5`.
 
 ### Específico de cada página
 `js/paginas/x.js`: o array do recurso, `window.onload`, `mostrarX(lista)`, `montarCardX(item)` e `abrirDetalhesX(item)`. Episódios ainda guarda o mapa URL → nome da temporada.
