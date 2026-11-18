@@ -132,6 +132,7 @@ Projeto_Final_CIWB/
 │   ├── busca.js                RF06 e RF07
 │   ├── ui.js                   lista, card, modal, carregando, erro e formatação (RF04 e RF05)
 │   ├── layout.js               menu e rodapé (RF01 e RF02)
+│   ├── tema.js                 modo claro/escuro, carregado no <head> (D7)
 │   └── paginas/
 │       ├── inicio.js
 │       ├── personagens.js
@@ -153,7 +154,7 @@ Projeto_Final_CIWB/
 **O que mudou e por quê:**
 - **`.gitignore` adicionado:** tira do Git o `settings.local.json` pessoal de cada um.
 - **`css/paginas/` fica só como regra, não como pasta:** com cards e modal genéricos, nenhuma página deve precisar de estilo próprio.
-- **Ordem dos scripts definida:** `cache.js` → `api.js` → `busca.js` → `ui.js` → `layout.js` → `paginas/x.js`, porque cada um usa funções dos anteriores.
+- **Ordem dos scripts definida:** `cache.js` → `api.js` → `busca.js` → `ui.js` → `layout.js` → `paginas/x.js`, porque cada um usa funções dos anteriores. O `tema.js` é a exceção: fica no `<head>`, para o tema estar certo antes de a página aparecer (D7).
 - **Nenhuma imagem substituta em `img/`:** personagem sem foto mostra as iniciais (D5).
 - **O resto fica igual:** `index.html` na raiz, páginas em `pages/` com `../`, um JS por página e nomes em português, minúsculos e sem acento. Isso importa porque a Vercel roda em Linux, onde caminho diferencia maiúsculas.
 
@@ -234,7 +235,7 @@ Bootstrap pela CDN do jsDelivr, fixo na **5.3.3**:
 - no `<head>`: `https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css`, depois `style.css`;
 - no fim do `<body>`, antes dos nossos scripts: `https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js` (traz o Popper, necessário para o modal e o menu recolhível).
 
-O tema escuro vem de `data-bs-theme="dark"` no `<html>`, com vermelho-sangue de destaque (D7).
+O site tem modo claro e modo escuro, trocados pelo `data-bs-theme` (`"light"`/`"dark"`) no `<html>`, com a paleta "Grimório" (vinho com dourado) e o nome "Diários de Mystic Falls" (D7). Na primeira visita segue o tema do sistema; o botão de tema no menu troca e salva a escolha. Cores, contraste e o CSS pronto estão em `docs/identidade-visual.md`.
 
 ---
 
@@ -277,15 +278,22 @@ Como a Fase 1 é feita em paralelo, os nomes abaixo (funções, IDs e classes) s
 **`js/layout.js`** (RF01, RF02)
 - `const PAGINAS = [{ id: 'inicio', titulo: 'Início', arquivo: 'index.html' }, { id: 'personagens', titulo: 'Personagens', arquivo: 'pages/personagens.html' }, …]`
 - `montarLayout(paginaAtual, raiz)`: `raiz` é `''` no `index.html` e `'../'` em `pages/`
-- `montarMenu(paginaAtual, raiz)`: navbar responsiva com logo, botão sanduíche e `active`/`aria-current`
+- `montarMenu(paginaAtual, raiz)`: navbar responsiva com logo, nome "Diários de Mystic Falls", botão sanduíche, `active`/`aria-current` e o botão de tema `#botao-tema`, que chama `trocarTema()` do `tema.js`
 - `montarRodape()`: dupla, disciplina, IFSP Araraquara, 2026, link da tvd-api e botão "Limpar dados salvos" (`limparCache()` + `location.reload()`; a função vem do `cache.js` e só é chamada no clique)
+
+**`js/tema.js`** (D7; carregado no `<head>`, logo depois do `style.css`, sem `defer`, antes de todos os outros scripts)
+- `const CHAVE_TEMA = 'tema';` com valor `'light'` ou `'dark'`. Não começa com a URL da API, então o `limparCache()` não apaga.
+- `temaInicial()` → o tema salvo no `localStorage` ou, sem escolha salva, `'dark'` quando `matchMedia('(prefers-color-scheme: dark)').matches` e `'light'` no resto
+- `aplicarTema(tema)`: `document.documentElement.setAttribute('data-bs-theme', tema)`
+- `trocarTema()`: aplica o tema oposto, salva no `localStorage` e atualiza o rótulo e o `aria-label` de `#botao-tema` ("Ativar modo claro" / "Ativar modo escuro")
+- Na última linha, `aplicarTema(temaInicial());`, que roda na hora, antes de a página aparecer. O arquivo usa o `localStorage` direto, porque o `cache.js` ainda não foi carregado no `<head>`.
 
 **Esqueleto de cada `pages/x.html`** (IDs fixos que o JS do Alexandre usa):
 
 ```html
 <!DOCTYPE html>
 <html lang="pt-BR" data-bs-theme="dark">
-<head> charset, viewport, <title>Personagens | …</title>, favicon ../img/favicon.png, CSS do Bootstrap, ../css/style.css </head>
+<head> charset, viewport, <title>Personagens | Diários de Mystic Falls</title>, favicon ../img/favicon.png, CSS do Bootstrap, ../css/style.css, <script src="../js/tema.js"></script> </head>
 <body>
     <header><nav id="menu" class="navbar navbar-expand-lg" aria-label="Menu principal"></nav></header>
     <main class="container py-4">
@@ -347,7 +355,7 @@ Como a Fase 1 é feita em paralelo, os nomes abaixo (funções, IDs e classes) s
 | PR | Dono | Passo | O que | Como testar |
 |---|---|---|---|---|
 | **A1** | Alexandre | 3 | `cache.js` + `api.js` | Os HTMLs ainda não existem, então o teste usa uma página HTML temporária, sem commit, com os dois scripts. No console: `await buscarComCache(URL_API + '/species')` → 1 requisição na Network e a chave em *Application → Local Storage*; na segunda vez, 0. `(await buscarTodos('episodes')).length` dá `171`. |
-| **L1** | Liliane | 2 | Os 6 HTMLs com o esqueleto da seção 4, `layout.js`, `style.css` base, `img/logo.png`, `img/favicon.png` e os 6 `js/paginas/x.js` mínimos | Navegar por todas as páginas pelo menu, no Live Server e com duplo clique; com 375 px, o menu vira sanduíche; `aria-current` na página ativa. |
+| **L1** | Liliane | 2 | Os 6 HTMLs com o esqueleto da seção 4, `layout.js`, `tema.js`, `style.css` base com a paleta de `docs/identidade-visual.md`, `img/logo.png`, `img/favicon.png` e os 6 `js/paginas/x.js` mínimos | Navegar por todas as páginas pelo menu, no Live Server e com duplo clique; com 375 px, o menu vira sanduíche; `aria-current` na página ativa. Tema: com o `localStorage` limpo, o site abre no tema do sistema; o botão troca o tema, a escolha continua ao mudar de página e ao recarregar, e a página não pisca no tema errado ao abrir. |
 | **A2** | Alexandre | 4–6 | `ui.js`, `busca.js` e `paginas/especies.js` completo (lista, busca, modal). Começa **depois do merge do L1**, com `/atualizar-branch` | Espécies mostra 9 cards; "vamp" → 2; "doppelganger" → Doppelgänger; "xyz" → RF07; "Humano" abre o modal com 24 nomes, e na segunda abertura não há requisição; DevTools *Offline* com cache limpo → alerta de erro; teclado: Tab, Enter e Esc. |
 | **L2** | Liliane | 7 | `style.css` final (tema, `.card-recurso`, `.iniciais`, modal), `index.html` + `inicio.js`. O `inicio.js` usa o `api.js` do A1 | A inicial mostra 49/171/8/9/10; páginas a 375, 768 e 1280 px; o cartão de Espécies (do A2) fica com o estilo final. |
 | **V** | Liliane | — | Vercel (seção 1c) | O domínio de produção abre. Com Vercel Authentication desligada, você abre o link de *preview* da `dev` sem login. |
@@ -378,7 +386,7 @@ Dependências: o A1 vem antes do L2 (o `inicio.js` usa `buscarComCache`); o L1 v
 | `js/cache.js`, `js/api.js`, `js/busca.js`, `js/ui.js` | Alexandre |
 | `pages/especies.html` + `js/paginas/especies.js`, `pages/familias.html` + `js/paginas/familias.js` | Liliane cria o esqueleto no L1; depois, **Alexandre** |
 | `pages/temporadas.html` + `js/paginas/temporadas.js` | Liliane cria o esqueleto no L1; depois, **Alexandre** (D11) |
-| `js/layout.js`, `css/style.css`, `img/*`, `index.html`, `js/paginas/inicio.js` | Liliane |
+| `js/layout.js`, `js/tema.js`, `css/style.css`, `img/*`, `index.html`, `js/paginas/inicio.js` | Liliane |
 | `pages/personagens.html` + `js/paginas/personagens.js`, `pages/episodios.html` + `js/paginas/episodios.js` | Liliane |
 | `README.md` | Liliane (você manda a sua parte do texto para ela) |
 | `memory/*` | Quem escreveu; nunca se edita o arquivo do outro |
@@ -444,6 +452,7 @@ git add pages/temporadas.html
 git add pages/especies.html
 git add pages/familias.html
 git add js/layout.js
+git add js/tema.js
 git add js/paginas/inicio.js
 git add js/paginas/personagens.js
 git add js/paginas/episodios.js
@@ -516,7 +525,7 @@ Pelo navegador: `https://github.com/lilianeperim-ifsp/Projeto_Final_CIWB/compare
 | D4 | Botão "Limpar dados salvos" no rodapé | Aprovada |
 | D5 | Sem foto → iniciais | **Aprovada.** A regra é por item (`image` preenchido → foto; `null` → iniciais), sem depender de quantos estão sem foto. |
 | D6 | Sem imagem nos cards de episódio | Aprovada |
-| D7 | Nome do site e cores | Aprovada como sugestão; a Liliane fecha junto com o logo no L1 |
+| D7 | Nome do site e cores | **Fechada em 18/11 pela dupla:** nome "Diários de Mystic Falls", paleta "Grimório" (vinho com dourado), com modo claro e modo escuro. A primeira visita segue o tema do sistema; o botão no menu troca e salva a escolha (`js/tema.js`, no `<head>`). Detalhes em `docs/identidade-visual.md`. |
 | D8 | Quem faz os compartilhados | **Dividido:** Alexandre faz `cache.js`, `api.js`, `busca.js`, `ui.js` e Espécies; Liliane faz os HTMLs, `layout.js`, `style.css`, `img/`, `index.html` e `inicio.js`. Um dono por arquivo (seção 7). |
 | D9 | Seção "Contexto" no `CLAUDE.md` | **Aprovada**; texto na seção 1b |
 | D10 | Usuário GitHub da Liliane | **Pendente.** Os blocos dela usam `trabalho/<usuario-da-liliane>`, com nota para trocar antes de rodar. |
