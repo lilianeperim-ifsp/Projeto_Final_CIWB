@@ -278,7 +278,7 @@ Como a Fase 1 é feita em paralelo, os nomes abaixo (funções, IDs e classes) s
 **`js/layout.js`** (RF01, RF02)
 - `const PAGINAS = [{ id: 'inicio', titulo: 'Início', arquivo: 'index.html' }, { id: 'personagens', titulo: 'Personagens', arquivo: 'pages/personagens.html' }, …]`
 - `montarLayout(paginaAtual, raiz)`: `raiz` é `''` no `index.html` e `'../'` em `pages/`
-- `montarMenu(paginaAtual, raiz)`: navbar responsiva com logo, nome "Diários de Mystic Falls", botão sanduíche, `active`/`aria-current` e o botão de tema `#botao-tema`, que chama `trocarTema()` do `tema.js`
+- `montarMenu(paginaAtual, raiz)`: navbar responsiva com logo, nome "Diários de Mystic Falls", botão sanduíche, `active`/`aria-current` e o botão de tema `#botao-tema`, que chama `trocarTema()` do `tema.js`. O `montarMenu()` lê o `data-bs-theme` do `<html>` e cria o botão já com o rótulo e o `aria-label` certos: "Ativar modo claro" no escuro e "Ativar modo escuro" no claro
 - `montarRodape()`: dupla, disciplina, IFSP Araraquara, 2026, link da tvd-api e botão "Limpar dados salvos" (`limparCache()` + `location.reload()`; a função vem do `cache.js` e só é chamada no clique)
 
 **`js/tema.js`** (D7; carregado no `<head>`, logo depois do `style.css`, sem `defer`, antes de todos os outros scripts)
@@ -312,6 +312,8 @@ Como a Fase 1 é feita em paralelo, os nomes abaixo (funções, IDs e classes) s
 </body>
 </html>
 ```
+
+O `data-bs-theme="dark"` escrito no `<html>` é a reserva para quando o JavaScript não roda; com ele rodando, o `tema.js` sobrescreve o atributo antes de a página aparecer.
 
 **`js/paginas/x.js` mínimos** (criados pela Liliane no PR L1, para o layout funcionar desde o início): só `window.onload = function(){ montarLayout('x', '../'); };`. Depois do merge do L1, cada arquivo passa para o dono da página, que completa o resto.
 
@@ -525,7 +527,7 @@ Pelo navegador: `https://github.com/lilianeperim-ifsp/Projeto_Final_CIWB/compare
 | D4 | Botão "Limpar dados salvos" no rodapé | Aprovada |
 | D5 | Sem foto → iniciais | **Aprovada.** A regra é por item (`image` preenchido → foto; `null` → iniciais), sem depender de quantos estão sem foto. |
 | D6 | Sem imagem nos cards de episódio | Aprovada |
-| D7 | Nome do site e cores | **Fechada em 18/11 pela dupla:** nome "Diários de Mystic Falls", paleta "Grimório" (vinho com dourado), com modo claro e modo escuro. A primeira visita segue o tema do sistema; o botão no menu troca e salva a escolha (`js/tema.js`, no `<head>`). Detalhes em `docs/identidade-visual.md`. |
+| D7 | Nome do site e cores | **Fechada em 17/11 pela dupla:** nome "Diários de Mystic Falls", paleta "Grimório" (vinho com dourado, um vinho mais claro no modo escuro), com modo claro e modo escuro. A primeira visita segue o tema do sistema; o botão no menu troca e salva a escolha (`js/tema.js`, no `<head>`). Detalhes em `docs/identidade-visual.md`. |
 | D8 | Quem faz os compartilhados | **Dividido:** Alexandre faz `cache.js`, `api.js`, `busca.js`, `ui.js` e Espécies; Liliane faz os HTMLs, `layout.js`, `style.css`, `img/`, `index.html` e `inicio.js`. Um dono por arquivo (seção 7). |
 | D9 | Seção "Contexto" no `CLAUDE.md` | **Aprovada**; texto na seção 1b |
 | D10 | Usuário GitHub da Liliane | **Pendente.** Os blocos dela usam `trabalho/<usuario-da-liliane>`, com nota para trocar antes de rodar. |
