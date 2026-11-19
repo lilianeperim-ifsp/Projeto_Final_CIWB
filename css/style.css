@@ -1,1 +1,173 @@
 /* css/style.css: estilo compartilhado (tema, cards .card-recurso, .iniciais, menu e modal). Dona: Liliane (PRs L1 e L2). */
+/* Carregado depois do CSS do Bootstrap 5.3.3. Cores e contraste: docs/identidade-visual.md. */
+
+/* modo claro */
+:root,
+[data-bs-theme="light"] {
+    --tvd-fundo: #f6efe4;
+    --tvd-superficie: #fffaf2;
+    --tvd-borda: #e0d0bb;
+    --tvd-texto: #2a1a14;
+    --tvd-texto-secundario: #6e5a4b;
+    --tvd-destaque: #8a1526;
+    --tvd-texto-destaque: #fff7ec;
+    --tvd-link: #7a5612;
+    --tvd-foco: #a07a1f;
+    --tvd-carregando: #8a1526;
+    --tvd-erro-fundo: #fbe3e0;
+    --tvd-erro-texto: #8a1a14;
+
+    /* variáveis do Bootstrap 5.3.3 apontando para a paleta */
+    --bs-body-bg: var(--tvd-fundo);
+    --bs-body-color: var(--tvd-texto);
+    --bs-secondary-color: var(--tvd-texto-secundario);
+    --bs-tertiary-bg: var(--tvd-superficie);
+    --bs-border-color: var(--tvd-borda);
+    --bs-link-color: var(--tvd-link);
+    --bs-link-color-rgb: 122, 86, 18;
+    --bs-link-hover-color: var(--tvd-texto);
+    --bs-link-hover-color-rgb: 42, 26, 20;
+    --bs-focus-ring-color: var(--tvd-foco);
+    --bs-danger-bg-subtle: var(--tvd-erro-fundo);
+    --bs-danger-text-emphasis: var(--tvd-erro-texto);
+}
+
+/* modo escuro */
+[data-bs-theme="dark"] {
+    --tvd-fundo: #140c0e;
+    --tvd-superficie: #22151a;
+    --tvd-borda: #43303a;
+    --tvd-texto: #f1e6dc;
+    --tvd-texto-secundario: #bfae9e;
+    --tvd-destaque: #c0304a;
+    --tvd-texto-destaque: #f7ecd9;
+    --tvd-link: #d9b26a;
+    --tvd-foco: #e8c36f;
+    --tvd-carregando: #d9b26a;
+    --tvd-erro-fundo: #3d1016;
+    --tvd-erro-texto: #ffb3ae;
+
+    /* variáveis do Bootstrap 5.3.3 apontando para a paleta */
+    --bs-body-bg: var(--tvd-fundo);
+    --bs-body-color: var(--tvd-texto);
+    --bs-secondary-color: var(--tvd-texto-secundario);
+    --bs-tertiary-bg: var(--tvd-superficie);
+    --bs-border-color: var(--tvd-borda);
+    --bs-link-color: var(--tvd-link);
+    --bs-link-color-rgb: 217, 178, 106;
+    --bs-link-hover-color: var(--tvd-texto);
+    --bs-link-hover-color-rgb: 241, 230, 220;
+    --bs-focus-ring-color: var(--tvd-foco);
+    --bs-danger-bg-subtle: var(--tvd-erro-fundo);
+    --bs-danger-text-emphasis: var(--tvd-erro-texto);
+}
+
+/* superfície: o .card e o .modal do Bootstrap copiam o --bs-body-bg, e a navbar é transparente */
+.card {
+    --bs-card-bg: var(--tvd-superficie);
+    --bs-card-border-color: var(--tvd-borda);
+}
+
+.modal {
+    --bs-modal-bg: var(--tvd-superficie);
+    --bs-modal-border-color: var(--tvd-borda);
+}
+
+#menu,
+#rodape {
+    background-color: var(--tvd-superficie);
+}
+
+/* anel de foco da paleta no lugar do azul do Bootstrap; os seletores com classe
+   são necessários porque o Bootstrap zera o outline neles com a mesma força */
+:focus-visible,
+.btn:focus-visible,
+.btn-close:focus-visible,
+.nav-link:focus-visible,
+.navbar-toggler:focus-visible,
+.form-control:focus {
+    outline: 2px solid var(--tvd-foco);
+    outline-offset: 2px;
+    box-shadow: none;
+}
+
+.form-control:focus {
+    border-color: var(--tvd-foco);
+}
+
+.btn-close:focus,
+.navbar-toggler:focus {
+    box-shadow: none;
+}
+
+/* página inteira: o rodapé fica embaixo mesmo quando o conteúdo é curto */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1 0 auto;
+}
+
+/* menu: cores da navbar apontando para a paleta */
+#menu {
+    --bs-navbar-color: var(--tvd-texto);
+    --bs-navbar-hover-color: var(--tvd-link);
+    --bs-navbar-active-color: var(--tvd-texto-destaque);
+    --bs-navbar-brand-color: var(--tvd-texto);
+    --bs-navbar-brand-hover-color: var(--tvd-link);
+    border-bottom: 1px solid var(--tvd-borda);
+}
+
+#menu .navbar-brand {
+    font-weight: 600;
+}
+
+/* item ativo do menu: vinho com texto claro (8,9:1 no claro e 4,8:1 no escuro) */
+#menu .nav-link.active {
+    background-color: var(--tvd-destaque);
+    color: var(--tvd-texto-destaque);
+    border-radius: 0.375rem;
+}
+
+#menu .nav-link {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+}
+
+/* botões: o .btn-primary e o .btn-outline-primary do Bootstrap com as cores da paleta */
+.btn-primary {
+    --bs-btn-color: var(--tvd-texto-destaque);
+    --bs-btn-bg: var(--tvd-destaque);
+    --bs-btn-border-color: var(--tvd-destaque);
+    --bs-btn-hover-color: var(--tvd-superficie);
+    --bs-btn-hover-bg: var(--tvd-link);
+    --bs-btn-hover-border-color: var(--tvd-link);
+    --bs-btn-active-color: var(--tvd-superficie);
+    --bs-btn-active-bg: var(--tvd-link);
+    --bs-btn-active-border-color: var(--tvd-link);
+}
+
+.btn-outline-primary {
+    --bs-btn-color: var(--tvd-link);
+    --bs-btn-border-color: var(--tvd-link);
+    --bs-btn-hover-color: var(--tvd-superficie);
+    --bs-btn-hover-bg: var(--tvd-link);
+    --bs-btn-hover-border-color: var(--tvd-link);
+    --bs-btn-active-color: var(--tvd-superficie);
+    --bs-btn-active-bg: var(--tvd-link);
+    --bs-btn-active-border-color: var(--tvd-link);
+}
+
+/* spinner de carregamento (role="status") */
+.spinner-border {
+    color: var(--tvd-carregando);
+}
+
+/* rodapé */
+#rodape {
+    border-top: 1px solid var(--tvd-borda);
+    color: var(--tvd-texto-secundario);
+}
