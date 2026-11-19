@@ -170,3 +170,173 @@ Os botões, o item ativo do menu, as `.iniciais` e o spinner usam as variáveis 
 - **Sem JavaScript:** o `data-bs-theme="dark"` escrito no `<html>` dos HTMLs é a reserva para quando o JavaScript não roda. Com ele rodando, o `tema.js` sobrescreve o atributo.
 
 O contrato do `tema.js` e do botão está no `docs/plano.md`, seção 4, "Parte da Liliane".
+
+## Design das páginas
+
+Decidido pela dupla em 2026-11-17, em cima da paleta acima e do Bootstrap 5.3.3.
+
+| Item | Escolha |
+|---|---|
+| Tipografia | **Inscrição:** Cinzel nos títulos (`h1`–`h6`, marca do menu, título do modal e do card, contagem da inicial) e Lato no texto |
+| Card (`.card-recurso`) | **Elevado:** sem borda, com sombra; no hover sobe 2px e a sombra cresce |
+| Foto no card | **Retrato no topo:** foto 4:5 ocupando a largura do card. O pôster de temporada é sempre 2:3 |
+| Iniciais (`.iniciais`) | **Vinho cheio:** fundo `--tvd-destaque`, letras `--tvd-texto-destaque`, no mesmo formato 4:5 da foto |
+| Item ativo do menu | **Sublinhado dourado:** texto na cor principal com traço de 2px em `--tvd-link` |
+| Detalhes do modal | **Duas colunas:** `<dl class="row">`, rótulo à esquerda (`col-sm-4`) e valor à direita (`col-sm-8`) |
+
+### Telas
+
+- **Inicial:** `h1` com o nome do site, uma frase de apresentação e cinco atalhos (`<a class="card-recurso">`) com a contagem em `.contagem`, o nome do recurso e "Ver todos". Grade de 1 coluna no celular, 3 a partir do `sm` e 5 a partir do `lg` (`row-cols-1 row-cols-sm-3 row-cols-lg-5`).
+- **Página de recurso:** `h1`, busca com `label` visível e grade de cards com 1, 2 e 4 colunas (`row-cols-1 row-cols-sm-2 row-cols-lg-4`).
+  - Personagens: foto ou iniciais, nome e ator.
+  - Episódios: sem imagem; título, "Temporada 1 · Episódio 1" e a data.
+  - Temporadas: pôster 2:3, nome, período e nº de episódios.
+  - Espécies: sem imagem; nome e nº de personagens.
+  - Famílias: sem imagem; nome, selo "Fundadora" (`.selo-fundadora`) e nº de personagens.
+- **Modal:** `.modal-lg` no desktop. Foto (`.foto-detalhe`, 200px em 4:5) ou iniciais à esquerda e a `<dl>` à direita; abaixo de 768px a foto fica em cima.
+- **Menu:** recolhe no botão sanduíche abaixo de 992px (`navbar-expand-lg`).
+
+### CSS do design para o `style.css`
+
+Vai no `style.css` depois do CSS da paleta. O `<link>` das fontes entra no `<head>` de cada HTML, antes do `style.css`:
+
+```html
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Lato:wght@400;700&display=swap">
+```
+
+Sem internet, o título cai para Georgia e o texto para a fonte do sistema. O Lato é carregado em 400 e 700; o `font-weight: 600` do selo e do `<dt>` aparece em 700.
+
+```css
+/* tipografia */
+:root {
+    --tvd-fonte-titulo: "Cinzel", Georgia, serif;
+    --tvd-fonte-texto: "Lato", system-ui, sans-serif;
+    --bs-body-font-family: var(--tvd-fonte-texto);
+}
+
+h1, h2, h3, h4, h5, h6,
+.navbar-brand,
+.modal-title,
+.card-title,
+.contagem {
+    font-family: var(--tvd-fonte-titulo);
+}
+
+/* menu */
+.navbar {
+    --bs-navbar-color: var(--tvd-texto-secundario);
+    --bs-navbar-hover-color: var(--tvd-texto);
+    --bs-navbar-nav-link-padding-x: .75rem;
+}
+
+.navbar .nav-link.active {
+    color: var(--tvd-texto);
+    text-decoration: underline 2px var(--tvd-link);
+    text-underline-offset: .5rem;
+}
+
+/* card de recurso: o <button> (ou o <a> da inicial) que envolve o .card */
+.card-recurso {
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    border-radius: var(--bs-card-border-radius);
+    background: none;
+    color: inherit;
+    text-align: start;
+    text-decoration: none;
+}
+
+.card-recurso .card {
+    --tvd-sombra: rgba(42, 26, 20, .14);
+    height: 100%;
+    border-color: transparent;
+    box-shadow: 0 1px 3px var(--tvd-sombra), 0 6px 16px var(--tvd-sombra);
+    transition: box-shadow .15s, transform .15s;
+}
+
+[data-bs-theme="dark"] .card-recurso .card {
+    --tvd-sombra: rgba(0, 0, 0, .5);
+}
+
+.card-recurso:hover .card {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 6px var(--tvd-sombra), 0 12px 28px var(--tvd-sombra);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .card-recurso .card {
+        transition: none;
+        transform: none !important;
+    }
+}
+
+/* foto (img.card-img-top.foto-recurso) e iniciais no card */
+.card-recurso .foto-recurso,
+.card-recurso .iniciais {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    border-radius: var(--bs-card-inner-border-radius) var(--bs-card-inner-border-radius) 0 0;
+}
+
+.card-recurso .iniciais {
+    font-size: 2.5rem;
+}
+
+/* pôster de temporada: sempre 2:3, ocupando a largura */
+.card-recurso .foto-recurso.poster {
+    aspect-ratio: 2 / 3;
+}
+
+.iniciais {
+    display: grid;
+    place-items: center;
+    background-color: var(--tvd-destaque);
+    color: var(--tvd-texto-destaque);
+    font-family: var(--tvd-fonte-titulo);
+    font-weight: 700;
+    letter-spacing: .05em;
+}
+
+/* selo das famílias fundadoras e contagem da inicial */
+.selo-fundadora {
+    display: inline-block;
+    padding: .125rem .5rem;
+    border: 1px solid currentColor;
+    border-radius: 50rem;
+    color: var(--tvd-link);
+    font-size: .75rem;
+    font-weight: 600;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+}
+
+.contagem {
+    font-size: 2.25rem;
+    line-height: 1;
+}
+
+/* modal (.modal-lg no desktop) */
+.modal .foto-detalhe,
+.modal .iniciais {
+    width: 200px;
+    max-width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    border-radius: var(--bs-border-radius);
+    font-size: 3rem;
+}
+
+/* <dl class="row"> com <dt class="col-sm-4"> e <dd class="col-sm-8"> */
+.modal dt {
+    color: var(--tvd-texto-secundario);
+    font-weight: 600;
+}
+```
+
+O anel de foco dos cards vem do bloco de foco da paleta: o `:focus-visible` desenha o contorno no `<button class="card-recurso">`, que acompanha o arredondamento do card.
+
+As classes que o JavaScript precisa criar estão no `docs/plano.md`, seção 4 (`ui.js` e `inicio.js`).
