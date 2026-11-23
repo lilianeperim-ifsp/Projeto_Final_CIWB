@@ -193,6 +193,9 @@ function criarCard(titulo, linhas, imagem, alt, ehPoster){
 let aberturaModal = 0;
 let modalAberto = false;
 
+// o card que abriu o modal, para devolver o foco a ele quando o modal fechar
+let focoAntesDoModal = null;
+
 
 // cria o modal uma vez só, no fim do <body>
 function criarModal(){
@@ -237,7 +240,15 @@ function criarModal(){
 
     // o Bootstrap avisa quando o modal termina de fechar (Esc, X ou clique fora)
     modal.addEventListener('hidden.bs.modal', function(){
+
         modalAberto = false;
+
+        // o Bootstrap só devolve o foco quando o modal abre por data-bs-toggle;
+        // aqui ele abre pelo JavaScript, então quem devolve é o ui.js (o teclado continua no card)
+        if (focoAntesDoModal !== null){
+            focoAntesDoModal.focus();
+            focoAntesDoModal = null;
+        }
     });
 
     document.body.appendChild(modal);
@@ -262,6 +273,11 @@ function abrirModal(titulo, conteudo){
     corpo.innerHTML = '';
     corpo.appendChild(conteudo);
 
+    // guarda o card só na primeira abertura; com o modal já aberto, o foco está dentro dele
+    if (!modalAberto){
+        focoAntesDoModal = document.activeElement;
+    }
+
     aberturaModal++;
     modalAberto = true;
 
@@ -282,6 +298,18 @@ function preencherModal(abertura, conteudo){
     const corpo = document.querySelector('#modal-corpo');
     corpo.innerHTML = '';
     corpo.appendChild(conteudo);
+}
+
+
+// aviso de erro dentro do modal, quando os nomes relacionados não chegam
+function criarAvisoErro(mensagem){
+
+    const alerta = document.createElement('div');
+    alerta.className = 'alert alert-danger mb-0';
+    alerta.setAttribute('role', 'alert');
+    alerta.textContent = mensagem;
+
+    return alerta;
 }
 
 

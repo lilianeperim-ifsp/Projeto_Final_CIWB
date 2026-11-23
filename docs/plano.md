@@ -285,6 +285,8 @@ Como a Fase 1 é feita em paralelo, os nomes abaixo (funções, IDs e classes) s
 - `criarFotoDetalhe(imagem, alt, nome)` → `<img class="foto-detalhe">`, ou as iniciais quando `imagem` é `null`
 - `criarDetalhesComFoto(foto, detalhes)` → linha com a foto à esquerda e os detalhes à direita (`col-md-auto` + `col-md`); abaixo de 768px a foto fica em cima
 - `criarSpinner(texto)` → `role="status"` com o spinner do Bootstrap
+- `criarAvisoErro(mensagem)` → `<div class="alert alert-danger" role="alert">`, para o modal quando as relações não chegam: `preencherModal(abertura, criarAvisoErro('Não foi possível carregar os personagens…'))`
+- Ao fechar (Esc, X ou clique fora), o modal devolve o foco ao card que o abriu
 - `criarListaDetalhes(pares)` → `<dl class="row">` com `<dt class="col-sm-4">` e `<dd class="col-sm-8">`; `pares` é uma lista de `[rótulo, valor]`, e o valor pode ser texto ou elemento: `criarListaDetalhes([['Ator', 'Nina Dobrev'], ['Espécies', lista]])`
 - `criarListaDeNomes(nomes, numerada)` → `<ol>` quando `numerada` é `true` (episódios da temporada), `<ul>` no resto
 - `formatarData(dataIso)` → `'10/09/2009'` com `split('-')`, ou `'Não informado'` quando vem vazio. **Não** usar `new Date('2009-09-10')`: o texto é lido como UTC e, no fuso do Brasil, a data apareceria como 09/09.
