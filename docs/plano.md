@@ -161,7 +161,7 @@ Projeto_Final_CIWB/
 ## 3. Decisões de arquitetura (pontos 1 a 10)
 
 ### Ponto 1 — Páginas e layout
-- **Seis páginas:** cinco de recurso e uma inicial (D1 aprovada, com confirmação pendente com o professor). A inicial apresenta a série e tem cinco cards com a contagem de cada recurso, vinda do `count` da primeira página, que é a mesma requisição e a mesma chave de cache que a página de recurso usa depois.
+- **Seis páginas:** cinco de recurso e uma inicial (D1, decisão fechada pela dupla em 22/11). A inicial apresenta a série e tem cinco cards com a contagem de cada recurso, vinda do `count` da primeira página, que é a mesma requisição e a mesma chave de cache que a página de recurso usa depois.
 - **Layout montado por JavaScript dentro de tags semânticas fixas.** Todo HTML tem `<header><nav id="menu" aria-label="Menu principal"></nav></header>`, `<main>` e `<footer id="rodape"></footer>` escritos no arquivo, e o `layout.js` só preenche o conteúdo:
   - o menu fica num lugar só;
   - o professor vê `header`/`nav`/`main`/`footer` no código-fonte (RNF02);
@@ -525,7 +525,7 @@ Pelo navegador: `https://github.com/lilianeperim-ifsp/Projeto_Final_CIWB/compare
 
 | # | Decisão | Situação |
 |---|---|---|
-| D1 | Página inicial | **Mantida.** Você confirma com o professor; se ele preferir sem, o `index.html` vira a página de Personagens e o menu perde "Início". |
+| D1 | Página inicial | **Mantida.** Em 22/11 a dupla decidiu manter o `index.html` como página inicial, com a apresentação e os cinco cards de contagem, sem consultar o professor. |
 | D2 | Relações resolvidas pela lista do recurso | Aprovada |
 | D3 | `<script>` comum, sem módulos | Aprovada |
 | D4 | Botão "Limpar dados salvos" no rodapé | Aprovada |
