@@ -32,16 +32,14 @@ git checkout -b trabalho/alexsant22
 git push -u origin trabalho/alexsant22
 ```
 
-A Liliane, na máquina dela, depois que a `dev` existir:
-
-> **Antes de rodar:** troque `<usuario-da-liliane>` pelo usuário do GitHub dela (vocês vão confirmar). Vale para todos os blocos dela neste plano.
+A Liliane, na máquina dela, depois que a `dev` existir (usuário do GitHub dela: `lilianeperim-ifsp`, D10):
 
 ```bash
 git status
 git fetch origin
 git checkout dev
-git checkout -b trabalho/<usuario-da-liliane>
-git push -u origin trabalho/<usuario-da-liliane>
+git checkout -b trabalho/lilianeperim-ifsp
+git push -u origin trabalho/lilianeperim-ifsp
 ```
 
 Opcional, feito pela Liliane: em *Settings → Branches*, proteger `main` e `dev` exigindo PR.
@@ -449,7 +447,7 @@ git push
 gh pr create --base dev --head trabalho/alexsant22 --title "feat: página de famílias" --body "Lista das famílias com selo de fundadora, busca por nome e modal com descrição e personagens."
 ```
 
-PR da Liliane (exemplo L1; ela troca `<usuario-da-liliane>` antes de rodar):
+PR da Liliane (exemplo L1):
 
 ```bash
 git status
@@ -472,7 +470,7 @@ git add img/logo.png
 git add img/favicon.png
 git commit -m "feat: esqueleto semântico das páginas, menu e rodapé"
 git push
-gh pr create --base dev --head trabalho/<usuario-da-liliane> --title "feat: esqueleto das páginas e layout" --body "Seis páginas com header, nav, main e footer, formulário de busca e contêineres da lista. Menu e rodapé montados pelo layout.js. Estilo base, logo e favicon."
+gh pr create --base dev --head trabalho/lilianeperim-ifsp --title "feat: esqueleto das páginas e layout" --body "Seis páginas com header, nav, main e footer, formulário de busca e contêineres da lista. Menu e rodapé montados pelo layout.js. Estilo base, logo e favicon."
 ```
 
 PR `dev` → `main` (R1 e o final):
@@ -536,5 +534,5 @@ Pelo navegador: `https://github.com/lilianeperim-ifsp/Projeto_Final_CIWB/compare
 | D7 | Nome do site e cores | **Fechada em 17/11 pela dupla:** nome "Diários de Mystic Falls", paleta "Grimório" (vinho com dourado, um vinho mais claro no modo escuro), com modo claro e modo escuro. A primeira visita segue o tema do sistema; o botão no menu troca e salva a escolha (`js/tema.js`, no `<head>`). Detalhes em `docs/identidade-visual.md`. |
 | D8 | Quem faz os compartilhados | **Dividido:** Alexandre faz `cache.js`, `api.js`, `busca.js`, `ui.js` e Espécies; Liliane faz os HTMLs, `layout.js`, `style.css`, `img/`, `index.html` e `inicio.js`. Um dono por arquivo (seção 7). |
 | D9 | Seção "Contexto" no `CLAUDE.md` | **Aprovada**; texto na seção 1b |
-| D10 | Usuário GitHub da Liliane | **Pendente.** Os blocos dela usam `trabalho/<usuario-da-liliane>`, com nota para trocar antes de rodar. |
+| D10 | Usuário GitHub da Liliane | **`lilianeperim-ifsp`** (confirmado em 15/11). A branch dela é `trabalho/lilianeperim-ifsp`. |
 | D11 | Temporadas passa da Liliane para o Alexandre | **Aprovada.** Famílias em 22/11 (commit local; push e PR em 23/11, depois do merge do A2), Temporadas em 28/11, 29/11 livre. |
