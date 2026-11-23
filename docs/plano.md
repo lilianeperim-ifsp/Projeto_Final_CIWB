@@ -260,7 +260,8 @@ Como a Fase 1 é feita em paralelo, os nomes abaixo (funções, IDs e classes) s
 **`js/busca.js`** (RF06, RF07)
 - `normalizarTexto(texto)` (a linha do ponto 6)
 - `filtrarPorNome(itens, termo, campo)` → array filtrado
-- `configurarBusca(itens, campo, mostrar)`: liga `#campo-busca.oninput` e `#form-busca.onsubmit`
+- `configurarBusca(itens, campo, mostrar)`: liga `#campo-busca.oninput`
+- `#form-busca.onsubmit` com `e.preventDefault()` é ligado assim que o `busca.js` carrega, fora do `configurarBusca`, para o Enter não recarregar a página enquanto a lista carrega ou depois de um erro
 - `atualizarMensagemBusca(quantidade, termo)`: com 0, `Nenhum resultado para "termo".`; com termo e resultados, "N resultados"; com o campo vazio, limpa
 
 **`js/ui.js`** (RF04, RF05)
@@ -272,7 +273,7 @@ Como a Fase 1 é feita em paralelo, os nomes abaixo (funções, IDs e classes) s
   - `imagem` com URL → `<img class="card-img-top foto-recurso">`, mais `.poster` quando `ehPoster` (temporadas);
   - `imagem === null` → `criarIniciais(titulo)`;
   - `imagem` não passada (episódios, espécies e famílias) → card sem mídia
-- `criarIniciais(nome)` → `<div class="iniciais" role="img" aria-label="Sem foto de …">`
+- `criarIniciais(nome)` → `<span class="iniciais" role="img" aria-label="Sem foto de …">` (`span`, porque as iniciais entram dentro do `<button>` do card)
 - `abrirModal(titulo, conteudo)`: cria o modal `.modal-lg` (título em `.modal-title`) na primeira vez, preenche e chama `bootstrap.Modal.getOrCreateInstance(...).show()`; chamado com o modal aberto, só troca o conteúdo. Devolve o número da abertura, usado no `preencherModal`
 - `preencherModal(abertura, conteudo)`: troca o conteúdo quando as relações chegam. Se a pessoa fechou o modal ou abriu outro item enquanto carregava, não faz nada, e o modal não reabre sozinho nem mostra os dados de outro item. Uso:
 
@@ -287,7 +288,7 @@ Como a Fase 1 é feita em paralelo, os nomes abaixo (funções, IDs e classes) s
 - `criarSpinner(texto)` → `role="status"` com o spinner do Bootstrap
 - `criarAvisoErro(mensagem)` → `<div class="alert alert-danger" role="alert">`, para o modal quando as relações não chegam: `preencherModal(abertura, criarAvisoErro('Não foi possível carregar os personagens…'))`
 - Ao fechar (Esc, X ou clique fora), o modal devolve o foco ao card que o abriu
-- `criarListaDetalhes(pares)` → `<dl class="row">` com `<dt class="col-sm-4">` e `<dd class="col-sm-8">`; `pares` é uma lista de `[rótulo, valor]`, e o valor pode ser texto ou elemento: `criarListaDetalhes([['Ator', 'Nina Dobrev'], ['Espécies', lista]])`
+- `criarListaDetalhes(pares)` → `<dl class="row">` com `<dt class="col-sm-4">` e `<dd class="col-sm-8">`; `pares` é uma lista de `[rótulo, valor]`, e o valor pode ser texto, número ou elemento: `criarListaDetalhes([['Ator', 'Nina Dobrev'], ['Espécies', lista]])`
 - `criarListaDeNomes(nomes, numerada)` → `<ol>` quando `numerada` é `true` (episódios da temporada), `<ul>` no resto
 - `formatarData(dataIso)` → `'10/09/2009'` com `split('-')`, ou `'Não informado'` quando vem vazio. **Não** usar `new Date('2009-09-10')`: o texto é lido como UTC e, no fuso do Brasil, a data apareceria como 09/09.
 

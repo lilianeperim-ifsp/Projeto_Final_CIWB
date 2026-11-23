@@ -169,12 +169,12 @@ function criarCard(titulo, linhas, imagem, alt, ehPoster){
         const spanLinha = document.createElement('span');
         spanLinha.className = 'card-text d-block text-body-secondary';
 
-        // a linha pode ser texto ou um elemento pronto (como o selo de fundadora)
-        if (typeof linha === 'string'){
-            spanLinha.textContent = linha;
+        // a linha pode ser um elemento pronto (como o selo de fundadora), um texto ou um número
+        if (linha instanceof Node){
+            spanLinha.appendChild(linha);
         }
         else{
-            spanLinha.appendChild(linha);
+            spanLinha.textContent = linha;
         }
 
         corpo.appendChild(spanLinha);
@@ -350,7 +350,7 @@ function criarDetalhesComFoto(foto, detalhes){
 }
 
 
-// pares [rótulo, valor] em duas colunas; o valor pode ser texto ou elemento
+// pares [rótulo, valor] em duas colunas; o valor pode ser um elemento, um texto ou um número
 function criarListaDetalhes(pares){
 
     const dl = document.createElement('dl');
@@ -365,11 +365,12 @@ function criarListaDetalhes(pares){
         const dd = document.createElement('dd');
         dd.className = 'col-sm-8';
 
-        if (typeof valor === 'string'){
-            dd.textContent = valor;
+        // só elemento entra com appendChild; número (como o episodeCount) e texto entram como texto
+        if (valor instanceof Node){
+            dd.appendChild(valor);
         }
         else{
-            dd.appendChild(valor);
+            dd.textContent = valor;
         }
 
         dl.appendChild(dt);

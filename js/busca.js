@@ -34,10 +34,24 @@ function filtrarPorNome(itens, termo, campo){
 }
 
 
+// o Enter no campo de busca não recarrega a página, nem enquanto a lista carrega nem depois de um erro
+// fica fora do configurarBusca, que só roda depois que a lista chega
+// o busca.js é carregado no fim do <body>, então o formulário já existe aqui
+const formBusca = document.querySelector('#form-busca');
+
+if (formBusca !== null){
+
+    formBusca.onsubmit = function(e){
+
+        // interrompe o comportamento padrão do evento
+        e.preventDefault();
+    };
+}
+
+
 // liga o campo de busca à lista da página; mostrar é a função que desenha os cards
 function configurarBusca(itens, campo, mostrar){
 
-    const form = document.querySelector('#form-busca');
     const campoBusca = document.querySelector('#campo-busca');
 
     // filtra enquanto a pessoa digita (RF06)
@@ -47,12 +61,6 @@ function configurarBusca(itens, campo, mostrar){
 
         mostrar(filtrados);
         atualizarMensagemBusca(filtrados.length, campoBusca.value);
-    };
-
-    form.onsubmit = function(e){
-
-        // interrompe o comportamento padrão do evento: o Enter não recarrega a página
-        e.preventDefault();
     };
 
     // se o navegador devolveu um termo ao voltar para a página, a lista já sai filtrada
