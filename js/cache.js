@@ -9,14 +9,28 @@ function lerCache(chave){
 
     // converte a string guardada para o objeto JS
     // se a chave não existir, getItem devolve null e JSON.parse(null) também
-    return JSON.parse(localStorage.getItem(chave));
+    // se a string guardada estiver corrompida ou o localStorage estiver bloqueado,
+    // trata como se não houvesse cache e busca de novo na API
+    try{
+        return JSON.parse(localStorage.getItem(chave));
+    }
+    catch (erro){
+        console.log(`Cache inválido em ${chave}`);
+        return null;
+    }
 }
 
 
 function salvarCache(chave, dados){
 
     // converte o objeto JS para JSON string antes de guardar (RN01)
-    localStorage.setItem(chave, JSON.stringify(dados));
+    // se não couber, a página segue com os dados, que só não ficam guardados
+    try{
+        localStorage.setItem(chave, JSON.stringify(dados));
+    }
+    catch (erro){
+        console.log(`Não foi possível guardar ${chave} no cache`);
+    }
 }
 
 

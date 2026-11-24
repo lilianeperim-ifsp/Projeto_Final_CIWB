@@ -161,10 +161,19 @@ h1, h2, h3, h4, h5, h6,
     }
 }
 
-/* item ativo do menu: texto na cor principal com sublinhado dourado de 2px (D7, design das páginas) */
+/* espaço dos lados dos links em todas as larguras: o Bootstrap zera o --bs-nav-link-padding-x
+   no .navbar-nav e só usa o --bs-navbar-nav-link-padding-x a partir de 992px */
+#menu .navbar-nav {
+    --bs-nav-link-padding-x: .75rem;
+}
+
+/* item ativo do menu: texto na cor principal com sublinhado dourado de 2px (D7, design das páginas);
+   propriedades separadas, porque o Safari descarta o atalho text-decoration com a espessura */
 #menu .nav-link.active {
     color: var(--tvd-texto);
-    text-decoration: underline 2px var(--tvd-link);
+    text-decoration-line: underline;
+    text-decoration-thickness: 2px;
+    text-decoration-color: var(--tvd-link);
     text-underline-offset: .5rem;
 }
 

@@ -12,7 +12,7 @@ A `trabalho/lilianeperim-ifsp` foi atualizada com a `dev`, que trouxe o PR #11 (
 - **PR #12 aprovado** (`gh pr review 12 --approve`, com comentário). O que foi conferido:
   - `node --check` sem erro em `js/ui.js`, `js/busca.js` e `js/paginas/especies.js`;
   - `filtrarPorNome` e `normalizarTexto` contra a tvd-api real: "vamp" → Vampiro e Vampiro Original; "doppelganger" e "DOPPEL" → Doppelgänger; "hibrido" e "híbrido" → Híbrido; "xyz" → nada; campo vazio ou só com espaços → as 9 espécies (RF06, RF07);
-  - a regex `̀-ͯ` do `busca.js` está gravada com as barras e os números, sem os caracteres invisíveis que o plano temia;
+  - a regex `/[\u0300-\u036f]/g` do `busca.js` está gravada com as barras e os números, sem os caracteres invisíveis que o plano temia;
   - as 9 espécies vêm numa página só, todas com descrição, e "Humano" tem 24 personagens;
   - o código segue o contrato da seção 4 do `docs/plano.md` e o estilo do professor. O `preencherModal` descarta a resposta atrasada quando o modal foi fechado ou trocado, e o foco volta ao card ao fechar (RNF02);
   - `.iniciais` como `<span>` funciona, porque o CSS de `docs/identidade-visual.md` dá `display: grid` a ela.

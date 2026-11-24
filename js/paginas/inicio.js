@@ -31,14 +31,22 @@ window.onload = async function(){
 
     mostrarCarregando('Carregando contagens…');
 
-    let houveErro = false;
+    // dispara as cinco requisições juntas; cada uma é uma Promise
+    // a mesma URL e a mesma chave de cache que a página do recurso usa depois (RN02)
+    const pedidos = [];
 
     for (let atalho of ATALHOS){
+        pedidos.push(buscarComCache(`${URL_API}/${atalho.recurso}`));
+    }
 
-        // a mesma URL e a mesma chave de cache que a página do recurso usa depois (RN02)
-        const jsonPagina = await buscarComCache(`${URL_API}/${atalho.recurso}`);
+    let houveErro = false;
 
-        const contagem = document.querySelector(`#contagem-${atalho.recurso}`);
+    for (let i = 0; i < ATALHOS.length; i++){
+
+        // espera cada resposta, na ordem dos atalhos
+        const jsonPagina = await pedidos[i];
+
+        const contagem = document.querySelector(`#contagem-${ATALHOS[i].recurso}`);
 
         // null quando a API não respondeu e a página não estava no cache
         if (jsonPagina === null){
