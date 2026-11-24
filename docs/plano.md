@@ -32,16 +32,14 @@ git checkout -b trabalho/alexsant22
 git push -u origin trabalho/alexsant22
 ```
 
-A Liliane, na máquina dela, depois que a `dev` existir:
-
-> **Antes de rodar:** troque `<usuario-da-liliane>` pelo usuário do GitHub dela (vocês vão confirmar). Vale para todos os blocos dela neste plano.
+A Liliane, na máquina dela, depois que a `dev` existir (usuário do GitHub dela: `lilianeperim-ifsp`, D10):
 
 ```bash
 git status
 git fetch origin
 git checkout dev
-git checkout -b trabalho/<usuario-da-liliane>
-git push -u origin trabalho/<usuario-da-liliane>
+git checkout -b trabalho/lilianeperim-ifsp
+git push -u origin trabalho/lilianeperim-ifsp
 ```
 
 Opcional, feito pela Liliane: em *Settings → Branches*, proteger `main` e `dev` exigindo PR.
@@ -132,6 +130,7 @@ Projeto_Final_CIWB/
 │   ├── busca.js                RF06 e RF07
 │   ├── ui.js                   lista, card, modal, carregando, erro e formatação (RF04 e RF05)
 │   ├── layout.js               menu e rodapé (RF01 e RF02)
+│   ├── tema.js                 modo claro/escuro, carregado no <head> (D7)
 │   └── paginas/
 │       ├── inicio.js
 │       ├── personagens.js
@@ -153,7 +152,7 @@ Projeto_Final_CIWB/
 **O que mudou e por quê:**
 - **`.gitignore` adicionado:** tira do Git o `settings.local.json` pessoal de cada um.
 - **`css/paginas/` fica só como regra, não como pasta:** com cards e modal genéricos, nenhuma página deve precisar de estilo próprio.
-- **Ordem dos scripts definida:** `cache.js` → `api.js` → `busca.js` → `ui.js` → `layout.js` → `paginas/x.js`, porque cada um usa funções dos anteriores.
+- **Ordem dos scripts definida:** `cache.js` → `api.js` → `busca.js` → `ui.js` → `layout.js` → `paginas/x.js`, porque cada um usa funções dos anteriores. O `tema.js` é a exceção: fica no `<head>`, para o tema estar certo antes de a página aparecer (D7).
 - **Nenhuma imagem substituta em `img/`:** personagem sem foto mostra as iniciais (D5).
 - **O resto fica igual:** `index.html` na raiz, páginas em `pages/` com `../`, um JS por página e nomes em português, minúsculos e sem acento. Isso importa porque a Vercel roda em Linux, onde caminho diferencia maiúsculas.
 
@@ -162,7 +161,7 @@ Projeto_Final_CIWB/
 ## 3. Decisões de arquitetura (pontos 1 a 10)
 
 ### Ponto 1 — Páginas e layout
-- **Seis páginas:** cinco de recurso e uma inicial (D1 aprovada, com confirmação pendente com o professor). A inicial apresenta a série e tem cinco cards com a contagem de cada recurso, vinda do `count` da primeira página, que é a mesma requisição e a mesma chave de cache que a página de recurso usa depois.
+- **Seis páginas:** cinco de recurso e uma inicial (D1, decisão fechada pela dupla em 22/11). A inicial apresenta a série e tem cinco cards com a contagem de cada recurso, vinda do `count` da primeira página, que é a mesma requisição e a mesma chave de cache que a página de recurso usa depois.
 - **Layout montado por JavaScript dentro de tags semânticas fixas.** Todo HTML tem `<header><nav id="menu" aria-label="Menu principal"></nav></header>`, `<main>` e `<footer id="rodape"></footer>` escritos no arquivo, e o `layout.js` só preenche o conteúdo:
   - o menu fica num lugar só;
   - o professor vê `header`/`nav`/`main`/`footer` no código-fonte (RNF02);
@@ -213,6 +212,8 @@ Um modal só, criado pelo `ui.js` na primeira abertura. O conteúdo é uma `<dl>
 | Espécie | nome, descrição, lista de personagens | `characters[]` → nomes |
 | Família | nome, "Fundadora de Mystic Falls: Sim/Não", descrição, lista de personagens | `characters[]` → nomes |
 
+**Campos vazios:** vários personagens vêm com `episodeCount: null` (Elijah, Rebekah e outros sem foto). Nesse caso o modal mostra "Não informado" no lugar do número.
+
 **Foto (D5):** a regra olha o próprio item, não uma lista fixa nem uma contagem. Se `image` vier preenchido, aparece a foto; se vier `null`, aparecem as iniciais. Se a tvd-api ganhar mais fotos, o site passa a mostrar sem nenhuma mudança no código.
 
 ### Ponto 8 — Lista (RF04)
@@ -234,7 +235,7 @@ Bootstrap pela CDN do jsDelivr, fixo na **5.3.3**:
 - no `<head>`: `https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css`, depois `style.css`;
 - no fim do `<body>`, antes dos nossos scripts: `https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js` (traz o Popper, necessário para o modal e o menu recolhível).
 
-O tema escuro vem de `data-bs-theme="dark"` no `<html>`, com vermelho-sangue de destaque (D7).
+O site tem modo claro e modo escuro, trocados pelo `data-bs-theme` (`"light"`/`"dark"`) no `<html>`, com a paleta "Grimório" (vinho com dourado) e o nome "Diários de Mystic Falls" (D7). Na primeira visita segue o tema do sistema; o botão de tema no menu troca e salva a escolha. Cores, contraste e o CSS pronto estão em `docs/identidade-visual.md`, junto com o design das páginas: Cinzel nos títulos e Lato no texto (Google Fonts), cards com sombra, foto 4:5 no topo do card, iniciais em vinho, item ativo do menu sublinhado em dourado e detalhes do modal em duas colunas.
 
 ---
 
@@ -259,33 +260,59 @@ Como a Fase 1 é feita em paralelo, os nomes abaixo (funções, IDs e classes) s
 **`js/busca.js`** (RF06, RF07)
 - `normalizarTexto(texto)` (a linha do ponto 6)
 - `filtrarPorNome(itens, termo, campo)` → array filtrado
-- `configurarBusca(itens, campo, mostrar)`: liga `#campo-busca.oninput` e `#form-busca.onsubmit`
+- `configurarBusca(itens, campo, mostrar)`: liga `#campo-busca.oninput`
+- `#form-busca.onsubmit` com `e.preventDefault()` é ligado assim que o `busca.js` carrega, fora do `configurarBusca`, para o Enter não recarregar a página enquanto a lista carrega ou depois de um erro
 - `atualizarMensagemBusca(quantidade, termo)`: com 0, `Nenhum resultado para "termo".`; com termo e resultados, "N resultados"; com o campo vazio, limpa
 
 **`js/ui.js`** (RF04, RF05)
 - `mostrarCarregando(texto)` / `esconderCarregando()` em `#estado`
 - `mostrarErro(mensagem)`: alerta com "Tentar novamente"
 - `mostrarLista(itens, montarCard, aoClicar)`: limpa `#lista`, um `<li class="col">` por item
-- `criarCard(titulo, linhas, imagem, alt)` → `<button class="card-recurso">` com card Bootstrap; `imagem === null` → `criarIniciais(titulo)`
-- `criarIniciais(nome)` → `<div class="iniciais" role="img" aria-label="Sem foto de …">`
-- `abrirModal(titulo, conteudo)`: cria o modal na primeira vez, preenche e chama `bootstrap.Modal.getOrCreateInstance(...).show()`; chamado com o modal aberto, só troca o conteúdo
-- `criarSpinner(texto)`, `criarListaDetalhes(pares)` → `<dl class="row">`, `criarListaDeNomes(nomes)` → `<ul>`/`<ol>`
-- `formatarData(dataIso)` → `'10/09/2009'` com `split('-')`. **Não** usar `new Date('2009-09-10')`: o texto é lido como UTC e, no fuso do Brasil, a data apareceria como 09/09.
+- `criarCard(titulo, linhas, imagem, alt, ehPoster)` → `<button type="button" class="card-recurso">` com um `.card` Bootstrap dentro (classes do design em `docs/identidade-visual.md`). Dentro do botão só há `<span>` (o `.card`, o `.card-body`, o título e as linhas), porque o HTML não permite `<div>` nem títulos dentro de `<button>`:
+  - título em `.card-title`; `linhas` são textos ou elementos (o selo `<span class="selo-fundadora">Fundadora</span>` das famílias entra como elemento);
+  - `imagem` com URL → `<img class="card-img-top foto-recurso">`, mais `.poster` quando `ehPoster` (temporadas);
+  - `imagem === null` → `criarIniciais(titulo)`;
+  - `imagem` não passada (episódios, espécies e famílias) → card sem mídia
+- `criarIniciais(nome)` → `<span class="iniciais" role="img" aria-label="Sem foto de …">` (`span`, porque as iniciais entram dentro do `<button>` do card)
+- `abrirModal(titulo, conteudo)`: cria o modal `.modal-lg` (título em `.modal-title`) na primeira vez, preenche e chama `bootstrap.Modal.getOrCreateInstance(...).show()`; chamado com o modal aberto, só troca o conteúdo. Devolve o número da abertura, usado no `preencherModal`
+- `preencherModal(abertura, conteudo)`: troca o conteúdo quando as relações chegam. Se a pessoa fechou o modal ou abriu outro item enquanto carregava, não faz nada, e o modal não reabre sozinho nem mostra os dados de outro item. Uso:
+
+  ```js
+  const abertura = abrirModal(especie.name, criarSpinner('Carregando personagens…'));
+  const personagens = await buscarRelacionados(especie.characters);
+  preencherModal(abertura, conteudo);
+  ```
+
+- `criarFotoDetalhe(imagem, alt, nome)` → `<img class="foto-detalhe">`, ou as iniciais quando `imagem` é `null`
+- `criarDetalhesComFoto(foto, detalhes)` → linha com a foto à esquerda e os detalhes à direita (`col-md-auto` + `col-md`); abaixo de 768px a foto fica em cima
+- `criarSpinner(texto)` → `role="status"` com o spinner do Bootstrap
+- `criarAvisoErro(mensagem)` → `<div class="alert alert-danger" role="alert">`, para o modal quando as relações não chegam: `preencherModal(abertura, criarAvisoErro('Não foi possível carregar os personagens…'))`
+- Ao fechar (Esc, X ou clique fora), o modal devolve o foco ao card que o abriu
+- `criarListaDetalhes(pares)` → `<dl class="row">` com `<dt class="col-sm-4">` e `<dd class="col-sm-8">`; `pares` é uma lista de `[rótulo, valor]`, e o valor pode ser texto, número ou elemento: `criarListaDetalhes([['Ator', 'Nina Dobrev'], ['Espécies', lista]])`
+- `criarListaDeNomes(nomes, numerada)` → `<ol>` quando `numerada` é `true` (episódios da temporada), `<ul>` no resto
+- `formatarData(dataIso)` → `'10/09/2009'` com `split('-')`, ou `'Não informado'` quando vem vazio. **Não** usar `new Date('2009-09-10')`: o texto é lido como UTC e, no fuso do Brasil, a data apareceria como 09/09.
 
 ### Parte da Liliane
 
 **`js/layout.js`** (RF01, RF02)
 - `const PAGINAS = [{ id: 'inicio', titulo: 'Início', arquivo: 'index.html' }, { id: 'personagens', titulo: 'Personagens', arquivo: 'pages/personagens.html' }, …]`
 - `montarLayout(paginaAtual, raiz)`: `raiz` é `''` no `index.html` e `'../'` em `pages/`
-- `montarMenu(paginaAtual, raiz)`: navbar responsiva com logo, botão sanduíche e `active`/`aria-current`
+- `montarMenu(paginaAtual, raiz)`: navbar responsiva com logo, nome "Diários de Mystic Falls", botão sanduíche, `active`/`aria-current` e o botão de tema `#botao-tema`, que chama `trocarTema()` do `tema.js`. O `montarMenu()` lê o `data-bs-theme` do `<html>` e cria o botão já com o rótulo e o `aria-label` certos: "Ativar modo claro" no escuro e "Ativar modo escuro" no claro
 - `montarRodape()`: dupla, disciplina, IFSP Araraquara, 2026, link da tvd-api e botão "Limpar dados salvos" (`limparCache()` + `location.reload()`; a função vem do `cache.js` e só é chamada no clique)
+
+**`js/tema.js`** (D7; carregado no `<head>`, logo depois do `style.css`, sem `defer`, antes de todos os outros scripts)
+- `const CHAVE_TEMA = 'tema';` com valor `'light'` ou `'dark'`. Não começa com a URL da API, então o `limparCache()` não apaga.
+- `temaInicial()` → o tema salvo no `localStorage` ou, sem escolha salva, `'dark'` quando `matchMedia('(prefers-color-scheme: dark)').matches` e `'light'` no resto
+- `aplicarTema(tema)`: `document.documentElement.setAttribute('data-bs-theme', tema)`
+- `trocarTema()`: aplica o tema oposto, salva no `localStorage` e atualiza o rótulo e o `aria-label` de `#botao-tema` ("Ativar modo claro" / "Ativar modo escuro")
+- Na última linha, `aplicarTema(temaInicial());`, que roda na hora, antes de a página aparecer. O arquivo usa o `localStorage` direto, porque o `cache.js` ainda não foi carregado no `<head>`.
 
 **Esqueleto de cada `pages/x.html`** (IDs fixos que o JS do Alexandre usa):
 
 ```html
 <!DOCTYPE html>
 <html lang="pt-BR" data-bs-theme="dark">
-<head> charset, viewport, <title>Personagens | …</title>, favicon ../img/favicon.png, CSS do Bootstrap, ../css/style.css </head>
+<head> charset, viewport, <title>Personagens | Diários de Mystic Falls</title>, favicon ../img/favicon.png, CSS do Bootstrap, <link> das fontes Cinzel e Lato (Google Fonts), ../css/style.css, <script src="../js/tema.js"></script> </head>
 <body>
     <header><nav id="menu" class="navbar navbar-expand-lg" aria-label="Menu principal"></nav></header>
     <main class="container py-4">
@@ -305,11 +332,13 @@ Como a Fase 1 é feita em paralelo, os nomes abaixo (funções, IDs e classes) s
 </html>
 ```
 
+O `data-bs-theme="dark"` escrito no `<html>` é a reserva para quando o JavaScript não roda; com ele rodando, o `tema.js` sobrescreve o atributo antes de a página aparecer.
+
 **`js/paginas/x.js` mínimos** (criados pela Liliane no PR L1, para o layout funcionar desde o início): só `window.onload = function(){ montarLayout('x', '../'); };`. Depois do merge do L1, cada arquivo passa para o dono da página, que completa o resto.
 
-**`css/style.css`** estiliza, além do tema: `.card-recurso` (o botão que envolve o card), `.iniciais` (círculo com as iniciais) e o destaque do menu ativo.
+**`css/style.css`** estiliza, além do tema: `.card-recurso` (o botão que envolve o card), `.foto-recurso` e `.poster`, `.iniciais` (bloco 4:5 com as iniciais), `.selo-fundadora`, `.contagem`, `.foto-detalhe`, o modal e o destaque do menu ativo. O CSS pronto está em `docs/identidade-visual.md`, seções da paleta e do design das páginas.
 
-**`js/paginas/inicio.js`**: `montarLayout('inicio', '')` e os cinco cards com o `count` vindo de `buscarComCache(URL_API + '/' + recurso)`, que é do `api.js`, pronto no PR A1.
+**`js/paginas/inicio.js`**: `montarLayout('inicio', '')` e os cinco cards com o `count` vindo de `buscarComCache(URL_API + '/' + recurso)`, que é do `api.js`, pronto no PR A1. Cada card é um `<a class="card-recurso">` para a página do recurso, com o número em `.contagem`, o nome em `.card-title` e "Ver todos", numa grade `row-cols-1 row-cols-sm-3 row-cols-lg-5`.
 
 ### Específico de cada página
 `js/paginas/x.js`: o array do recurso, `window.onload`, `mostrarX(lista)`, `montarCardX(item)` e `abrirDetalhesX(item)`. Episódios ainda guarda o mapa URL → nome da temporada.
@@ -347,7 +376,7 @@ Como a Fase 1 é feita em paralelo, os nomes abaixo (funções, IDs e classes) s
 | PR | Dono | Passo | O que | Como testar |
 |---|---|---|---|---|
 | **A1** | Alexandre | 3 | `cache.js` + `api.js` | Os HTMLs ainda não existem, então o teste usa uma página HTML temporária, sem commit, com os dois scripts. No console: `await buscarComCache(URL_API + '/species')` → 1 requisição na Network e a chave em *Application → Local Storage*; na segunda vez, 0. `(await buscarTodos('episodes')).length` dá `171`. |
-| **L1** | Liliane | 2 | Os 6 HTMLs com o esqueleto da seção 4, `layout.js`, `style.css` base, `img/logo.png`, `img/favicon.png` e os 6 `js/paginas/x.js` mínimos | Navegar por todas as páginas pelo menu, no Live Server e com duplo clique; com 375 px, o menu vira sanduíche; `aria-current` na página ativa. |
+| **L1** | Liliane | 2 | Os 6 HTMLs com o esqueleto da seção 4, `layout.js`, `tema.js`, `style.css` base com a paleta de `docs/identidade-visual.md`, `img/logo.png`, `img/favicon.png` e os 6 `js/paginas/x.js` mínimos | Navegar por todas as páginas pelo menu, no Live Server e com duplo clique; com 375 px, o menu vira sanduíche; `aria-current` na página ativa. Tema: com o `localStorage` limpo, o site abre no tema do sistema; o botão troca o tema, a escolha continua ao mudar de página e ao recarregar, e a página não pisca no tema errado ao abrir. |
 | **A2** | Alexandre | 4–6 | `ui.js`, `busca.js` e `paginas/especies.js` completo (lista, busca, modal). Começa **depois do merge do L1**, com `/atualizar-branch` | Espécies mostra 9 cards; "vamp" → 2; "doppelganger" → Doppelgänger; "xyz" → RF07; "Humano" abre o modal com 24 nomes, e na segunda abertura não há requisição; DevTools *Offline* com cache limpo → alerta de erro; teclado: Tab, Enter e Esc. |
 | **L2** | Liliane | 7 | `style.css` final (tema, `.card-recurso`, `.iniciais`, modal), `index.html` + `inicio.js`. O `inicio.js` usa o `api.js` do A1 | A inicial mostra 49/171/8/9/10; páginas a 375, 768 e 1280 px; o cartão de Espécies (do A2) fica com o estilo final. |
 | **V** | Liliane | — | Vercel (seção 1c) | O domínio de produção abre. Com Vercel Authentication desligada, você abre o link de *preview* da `dev` sem login. |
@@ -378,7 +407,7 @@ Dependências: o A1 vem antes do L2 (o `inicio.js` usa `buscarComCache`); o L1 v
 | `js/cache.js`, `js/api.js`, `js/busca.js`, `js/ui.js` | Alexandre |
 | `pages/especies.html` + `js/paginas/especies.js`, `pages/familias.html` + `js/paginas/familias.js` | Liliane cria o esqueleto no L1; depois, **Alexandre** |
 | `pages/temporadas.html` + `js/paginas/temporadas.js` | Liliane cria o esqueleto no L1; depois, **Alexandre** (D11) |
-| `js/layout.js`, `css/style.css`, `img/*`, `index.html`, `js/paginas/inicio.js` | Liliane |
+| `js/layout.js`, `js/tema.js`, `css/style.css`, `img/*`, `index.html`, `js/paginas/inicio.js` | Liliane |
 | `pages/personagens.html` + `js/paginas/personagens.js`, `pages/episodios.html` + `js/paginas/episodios.js` | Liliane |
 | `README.md` | Liliane (você manda a sua parte do texto para ela) |
 | `memory/*` | Quem escreveu; nunca se edita o arquivo do outro |
@@ -433,7 +462,7 @@ git push
 gh pr create --base dev --head trabalho/alexsant22 --title "feat: página de famílias" --body "Lista das famílias com selo de fundadora, busca por nome e modal com descrição e personagens."
 ```
 
-PR da Liliane (exemplo L1; ela troca `<usuario-da-liliane>` antes de rodar):
+PR da Liliane (exemplo L1):
 
 ```bash
 git status
@@ -444,6 +473,7 @@ git add pages/temporadas.html
 git add pages/especies.html
 git add pages/familias.html
 git add js/layout.js
+git add js/tema.js
 git add js/paginas/inicio.js
 git add js/paginas/personagens.js
 git add js/paginas/episodios.js
@@ -455,7 +485,7 @@ git add img/logo.png
 git add img/favicon.png
 git commit -m "feat: esqueleto semântico das páginas, menu e rodapé"
 git push
-gh pr create --base dev --head trabalho/<usuario-da-liliane> --title "feat: esqueleto das páginas e layout" --body "Seis páginas com header, nav, main e footer, formulário de busca e contêineres da lista. Menu e rodapé montados pelo layout.js. Estilo base, logo e favicon."
+gh pr create --base dev --head trabalho/lilianeperim-ifsp --title "feat: esqueleto das páginas e layout" --body "Seis páginas com header, nav, main e footer, formulário de busca e contêineres da lista. Menu e rodapé montados pelo layout.js. Estilo base, logo e favicon."
 ```
 
 PR `dev` → `main` (R1 e o final):
@@ -510,14 +540,14 @@ Pelo navegador: `https://github.com/lilianeperim-ifsp/Projeto_Final_CIWB/compare
 
 | # | Decisão | Situação |
 |---|---|---|
-| D1 | Página inicial | **Mantida.** Você confirma com o professor; se ele preferir sem, o `index.html` vira a página de Personagens e o menu perde "Início". |
+| D1 | Página inicial | **Mantida.** Em 22/11 a dupla decidiu manter o `index.html` como página inicial, com a apresentação e os cinco cards de contagem, sem consultar o professor. |
 | D2 | Relações resolvidas pela lista do recurso | Aprovada |
 | D3 | `<script>` comum, sem módulos | Aprovada |
 | D4 | Botão "Limpar dados salvos" no rodapé | Aprovada |
 | D5 | Sem foto → iniciais | **Aprovada.** A regra é por item (`image` preenchido → foto; `null` → iniciais), sem depender de quantos estão sem foto. |
 | D6 | Sem imagem nos cards de episódio | Aprovada |
-| D7 | Nome do site e cores | Aprovada como sugestão; a Liliane fecha junto com o logo no L1 |
+| D7 | Nome do site e cores | **Fechada em 17/11 pela dupla:** nome "Diários de Mystic Falls", paleta "Grimório" (vinho com dourado, um vinho mais claro no modo escuro), com modo claro e modo escuro. A primeira visita segue o tema do sistema; o botão no menu troca e salva a escolha (`js/tema.js`, no `<head>`). Detalhes em `docs/identidade-visual.md`. |
 | D8 | Quem faz os compartilhados | **Dividido:** Alexandre faz `cache.js`, `api.js`, `busca.js`, `ui.js` e Espécies; Liliane faz os HTMLs, `layout.js`, `style.css`, `img/`, `index.html` e `inicio.js`. Um dono por arquivo (seção 7). |
 | D9 | Seção "Contexto" no `CLAUDE.md` | **Aprovada**; texto na seção 1b |
-| D10 | Usuário GitHub da Liliane | **Pendente.** Os blocos dela usam `trabalho/<usuario-da-liliane>`, com nota para trocar antes de rodar. |
+| D10 | Usuário GitHub da Liliane | **`lilianeperim-ifsp`** (confirmado em 15/11). A branch dela é `trabalho/lilianeperim-ifsp`. |
 | D11 | Temporadas passa da Liliane para o Alexandre | **Aprovada.** Famílias em 22/11 (commit local; push e PR em 23/11, depois do merge do A2), Temporadas em 28/11, 29/11 livre. |

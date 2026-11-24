@@ -1,1 +1,320 @@
 /* css/style.css: estilo compartilhado (tema, cards .card-recurso, .iniciais, menu e modal). Dona: Liliane (PRs L1 e L2). */
+/* Carregado depois do CSS do Bootstrap 5.3.3. Cores e contraste: docs/identidade-visual.md. */
+
+/* modo claro */
+:root,
+[data-bs-theme="light"] {
+    --tvd-fundo: #f6efe4;
+    --tvd-superficie: #fffaf2;
+    --tvd-borda: #e0d0bb;
+    --tvd-texto: #2a1a14;
+    --tvd-texto-secundario: #6e5a4b;
+    --tvd-destaque: #8a1526;
+    --tvd-texto-destaque: #fff7ec;
+    --tvd-link: #7a5612;
+    --tvd-foco: #a07a1f;
+    --tvd-carregando: #8a1526;
+    --tvd-erro-fundo: #fbe3e0;
+    --tvd-erro-texto: #8a1a14;
+
+    /* variáveis do Bootstrap 5.3.3 apontando para a paleta */
+    --bs-body-bg: var(--tvd-fundo);
+    --bs-body-color: var(--tvd-texto);
+    --bs-secondary-color: var(--tvd-texto-secundario);
+    --bs-tertiary-bg: var(--tvd-superficie);
+    --bs-border-color: var(--tvd-borda);
+    --bs-link-color: var(--tvd-link);
+    --bs-link-color-rgb: 122, 86, 18;
+    --bs-link-hover-color: var(--tvd-texto);
+    --bs-link-hover-color-rgb: 42, 26, 20;
+    --bs-focus-ring-color: var(--tvd-foco);
+    --bs-danger-bg-subtle: var(--tvd-erro-fundo);
+    --bs-danger-text-emphasis: var(--tvd-erro-texto);
+}
+
+/* modo escuro */
+[data-bs-theme="dark"] {
+    --tvd-fundo: #140c0e;
+    --tvd-superficie: #22151a;
+    --tvd-borda: #43303a;
+    --tvd-texto: #f1e6dc;
+    --tvd-texto-secundario: #bfae9e;
+    --tvd-destaque: #c0304a;
+    --tvd-texto-destaque: #f7ecd9;
+    --tvd-link: #d9b26a;
+    --tvd-foco: #e8c36f;
+    --tvd-carregando: #d9b26a;
+    --tvd-erro-fundo: #3d1016;
+    --tvd-erro-texto: #ffb3ae;
+
+    /* variáveis do Bootstrap 5.3.3 apontando para a paleta */
+    --bs-body-bg: var(--tvd-fundo);
+    --bs-body-color: var(--tvd-texto);
+    --bs-secondary-color: var(--tvd-texto-secundario);
+    --bs-tertiary-bg: var(--tvd-superficie);
+    --bs-border-color: var(--tvd-borda);
+    --bs-link-color: var(--tvd-link);
+    --bs-link-color-rgb: 217, 178, 106;
+    --bs-link-hover-color: var(--tvd-texto);
+    --bs-link-hover-color-rgb: 241, 230, 220;
+    --bs-focus-ring-color: var(--tvd-foco);
+    --bs-danger-bg-subtle: var(--tvd-erro-fundo);
+    --bs-danger-text-emphasis: var(--tvd-erro-texto);
+}
+
+/* superfície: o .card e o .modal do Bootstrap copiam o --bs-body-bg, e a navbar é transparente */
+.card {
+    --bs-card-bg: var(--tvd-superficie);
+    --bs-card-border-color: var(--tvd-borda);
+}
+
+.modal {
+    --bs-modal-bg: var(--tvd-superficie);
+    --bs-modal-border-color: var(--tvd-borda);
+}
+
+#menu,
+#rodape {
+    background-color: var(--tvd-superficie);
+}
+
+/* anel de foco da paleta no lugar do azul do Bootstrap; os seletores com classe
+   são necessários porque o Bootstrap zera o outline neles com a mesma força */
+:focus-visible,
+.btn:focus-visible,
+.btn-close:focus-visible,
+.nav-link:focus-visible,
+.navbar-toggler:focus-visible,
+.form-control:focus {
+    outline: 2px solid var(--tvd-foco);
+    outline-offset: 2px;
+    box-shadow: none;
+}
+
+.form-control:focus {
+    border-color: var(--tvd-foco);
+}
+
+.btn-close:focus,
+.navbar-toggler:focus {
+    box-shadow: none;
+}
+
+/* página inteira: o rodapé fica embaixo mesmo quando o conteúdo é curto */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1 0 auto;
+}
+
+/* tipografia: Cinzel nos títulos e Lato no texto; sem internet, Georgia e a fonte do sistema */
+:root {
+    --tvd-fonte-titulo: "Cinzel", Georgia, serif;
+    --tvd-fonte-texto: "Lato", system-ui, sans-serif;
+    --bs-body-font-family: var(--tvd-fonte-texto);
+}
+
+h1, h2, h3, h4, h5, h6,
+.navbar-brand,
+.modal-title,
+.card-title,
+.contagem {
+    font-family: var(--tvd-fonte-titulo);
+}
+
+/* menu: cores da navbar apontando para a paleta; as variáveis ficam no #menu,
+   porque é nele que o Bootstrap aplica as da .navbar */
+#menu {
+    --bs-navbar-color: var(--tvd-texto-secundario);
+    --bs-navbar-hover-color: var(--tvd-texto);
+    --bs-navbar-active-color: var(--tvd-texto);
+    --bs-navbar-brand-color: var(--tvd-texto);
+    --bs-navbar-brand-hover-color: var(--tvd-link);
+    --bs-navbar-nav-link-padding-x: .75rem;
+    border-bottom: 1px solid var(--tvd-borda);
+}
+
+#menu .navbar-brand {
+    font-weight: 600;
+}
+
+/* no celular, a Cinzel é larga demais para a marca e o botão sanduíche caberem na mesma linha */
+@media (max-width: 575.98px) {
+    #menu .navbar-brand {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 374.98px) {
+    #menu .navbar-brand {
+        margin-right: 0;
+        font-size: .875rem;
+    }
+
+    #menu .navbar-brand img {
+        width: 32px;
+        height: 32px;
+    }
+}
+
+/* espaço dos lados dos links em todas as larguras: o Bootstrap zera o --bs-nav-link-padding-x
+   no .navbar-nav e só usa o --bs-navbar-nav-link-padding-x a partir de 992px */
+#menu .navbar-nav {
+    --bs-nav-link-padding-x: .75rem;
+}
+
+/* item ativo do menu: texto na cor principal com sublinhado dourado de 2px (D7, design das páginas);
+   propriedades separadas, porque o Safari descarta o atalho text-decoration com a espessura */
+#menu .nav-link.active {
+    color: var(--tvd-texto);
+    text-decoration-line: underline;
+    text-decoration-thickness: 2px;
+    text-decoration-color: var(--tvd-link);
+    text-underline-offset: .5rem;
+}
+
+/* botões: o .btn-primary e o .btn-outline-primary do Bootstrap com as cores da paleta */
+.btn-primary {
+    --bs-btn-color: var(--tvd-texto-destaque);
+    --bs-btn-bg: var(--tvd-destaque);
+    --bs-btn-border-color: var(--tvd-destaque);
+    --bs-btn-hover-color: var(--tvd-superficie);
+    --bs-btn-hover-bg: var(--tvd-link);
+    --bs-btn-hover-border-color: var(--tvd-link);
+    --bs-btn-active-color: var(--tvd-superficie);
+    --bs-btn-active-bg: var(--tvd-link);
+    --bs-btn-active-border-color: var(--tvd-link);
+}
+
+.btn-outline-primary {
+    --bs-btn-color: var(--tvd-link);
+    --bs-btn-border-color: var(--tvd-link);
+    --bs-btn-hover-color: var(--tvd-superficie);
+    --bs-btn-hover-bg: var(--tvd-link);
+    --bs-btn-hover-border-color: var(--tvd-link);
+    --bs-btn-active-color: var(--tvd-superficie);
+    --bs-btn-active-bg: var(--tvd-link);
+    --bs-btn-active-border-color: var(--tvd-link);
+}
+
+/* spinner de carregamento (role="status") */
+.spinner-border {
+    color: var(--tvd-carregando);
+}
+
+/* rodapé */
+#rodape {
+    border-top: 1px solid var(--tvd-borda);
+    color: var(--tvd-texto-secundario);
+}
+
+/* card de recurso: o <button> do ui.js (ou o <a> da inicial) que envolve o .card */
+.card-recurso {
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    border-radius: var(--bs-card-border-radius);
+    background: none;
+    color: inherit;
+    text-align: start;
+    text-decoration: none;
+}
+
+.card-recurso .card {
+    --tvd-sombra: rgba(42, 26, 20, .14);
+    height: 100%;
+    border-color: transparent;
+    box-shadow: 0 1px 3px var(--tvd-sombra), 0 6px 16px var(--tvd-sombra);
+    transition: box-shadow .15s, transform .15s;
+}
+
+[data-bs-theme="dark"] .card-recurso .card {
+    --tvd-sombra: rgba(0, 0, 0, .5);
+}
+
+.card-recurso:hover .card {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 6px var(--tvd-sombra), 0 12px 28px var(--tvd-sombra);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .card-recurso .card {
+        transition: none;
+        transform: none !important;
+    }
+}
+
+/* foto (img.card-img-top.foto-recurso) e iniciais no card: retrato 4:5 no topo */
+.card-recurso .foto-recurso,
+.card-recurso .iniciais {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    border-radius: var(--bs-card-inner-border-radius) var(--bs-card-inner-border-radius) 0 0;
+}
+
+.card-recurso .iniciais {
+    font-size: 2.5rem;
+}
+
+/* pôster de temporada: sempre 2:3, ocupando a largura */
+.card-recurso .foto-recurso.poster {
+    aspect-ratio: 2 / 3;
+}
+
+/* iniciais no lugar da foto (D5): vinho cheio com as letras claras */
+.iniciais {
+    display: grid;
+    place-items: center;
+    background-color: var(--tvd-destaque);
+    color: var(--tvd-texto-destaque);
+    font-family: var(--tvd-fonte-titulo);
+    font-weight: 700;
+    letter-spacing: .05em;
+}
+
+/* selo das famílias fundadoras */
+.selo-fundadora {
+    display: inline-block;
+    padding: .125rem .5rem;
+    border: 1px solid currentColor;
+    border-radius: 50rem;
+    color: var(--tvd-link);
+    font-size: .75rem;
+    font-weight: 600;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+}
+
+/* contagem e "Ver todos" nos atalhos da inicial */
+.contagem {
+    font-size: 2.25rem;
+    line-height: 1;
+}
+
+.card-recurso .ver-todos {
+    color: var(--tvd-link);
+}
+
+/* modal (.modal-lg no desktop): foto ou iniciais com 200px em 4:5 */
+.modal .foto-detalhe,
+.modal .iniciais {
+    width: 200px;
+    max-width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    border-radius: var(--bs-border-radius);
+    font-size: 3rem;
+}
+
+/* <dl class="row"> com <dt class="col-sm-4"> e <dd class="col-sm-8"> */
+.modal dt {
+    color: var(--tvd-texto-secundario);
+    font-weight: 600;
+}
