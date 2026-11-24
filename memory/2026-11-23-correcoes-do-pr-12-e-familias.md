@@ -8,7 +8,7 @@ assunto: correções do PR #12 e página de Famílias
 Continuação da sessão registrada em `2026-11-23-pr-12-especies-a2.md`.
 
 - O cartão "Revisar e fazer merge do L1" (t07) foi para Feito, ligado ao PR 10.
-- A Liliane aprovou o PR #12 (A2) às 20:26 com três pontos para corrigir, sem bloquear a aprovação. Os três foram corrigidos no commit `5e23e2a`, e ela fez o merge às 20:39. O cartão A2 foi para Feito.
+- A Liliane aprovou o PR #12 (A2) às 20:26 com três pontos para corrigir, sem bloquear a aprovação. Os três foram corrigidos no commit `5e23e2a`, e o Alexandre fez o merge às 20:39. O cartão A2 foi para Feito.
 - A `dev` local e a `trabalho/alexsant22` avançaram direto até o `b9b2f47` (merge do #12), sem precisar de merge.
 - A página de Famílias foi escrita (commit `06fd2b0`) e o Alexandre abriu o PR #13 para a `dev`. O cartão "Página de Famílias" (t11) está em "PR aberto" com `pr: 13`.
 
@@ -25,6 +25,7 @@ Continuação da sessão registrada em `2026-11-23-pr-12-especies-a2.md`.
 
 ## Erros e rejeições da IA
 - Quando o Alexandre pediu "vamos fazer a L1", o Claude entendeu a tarefa L1 da Liliane, que já estava mergeada, e não o cartão do Alexandre "Revisar e fazer merge do L1". O Alexandre esclareceu, e o Claude conferiu o #10 e moveu o cartão.
+- Na primeira versão desta memória, o Claude escreveu que a Liliane fez o merge do #12, sem conferir no GitHub. Quem fez foi o Alexandre (`mergedBy: alexsant22`). A Liliane apontou o erro na revisão do #13, e a memória foi corrigida.
 - Os três pontos da revisão do #12 eram erros do código escrito pelo Claude e só foram percebidos pela Liliane. O ponto 1 teria aparecido só na Fase 2.
 - O teste da Famílias foi feito no Node, com um DOM simulado e a tvd-api de verdade: 10 cards, selo em 5, "mik" → 1 resultado, "xyz" → mensagem do RF07, modal de Mikaelson com "Não" e 7 personagens, e 0 requisições na segunda abertura. Não houve teste no navegador, porque a extensão do Chrome falhou mais cedo na sessão. O visual do selo, o teclado e o modo Offline não foram testados.
 
