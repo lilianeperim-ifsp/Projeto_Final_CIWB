@@ -111,13 +111,30 @@ main {
     flex: 1 0 auto;
 }
 
-/* menu: cores da navbar apontando para a paleta */
+/* tipografia: Cinzel nos títulos e Lato no texto; sem internet, Georgia e a fonte do sistema */
+:root {
+    --tvd-fonte-titulo: "Cinzel", Georgia, serif;
+    --tvd-fonte-texto: "Lato", system-ui, sans-serif;
+    --bs-body-font-family: var(--tvd-fonte-texto);
+}
+
+h1, h2, h3, h4, h5, h6,
+.navbar-brand,
+.modal-title,
+.card-title,
+.contagem {
+    font-family: var(--tvd-fonte-titulo);
+}
+
+/* menu: cores da navbar apontando para a paleta; as variáveis ficam no #menu,
+   porque é nele que o Bootstrap aplica as da .navbar */
 #menu {
-    --bs-navbar-color: var(--tvd-texto);
-    --bs-navbar-hover-color: var(--tvd-link);
-    --bs-navbar-active-color: var(--tvd-texto-destaque);
+    --bs-navbar-color: var(--tvd-texto-secundario);
+    --bs-navbar-hover-color: var(--tvd-texto);
+    --bs-navbar-active-color: var(--tvd-texto);
     --bs-navbar-brand-color: var(--tvd-texto);
     --bs-navbar-brand-hover-color: var(--tvd-link);
+    --bs-navbar-nav-link-padding-x: .75rem;
     border-bottom: 1px solid var(--tvd-borda);
 }
 
@@ -125,16 +142,39 @@ main {
     font-weight: 600;
 }
 
-/* item ativo do menu: vinho com texto claro (8,9:1 no claro e 4,8:1 no escuro) */
-#menu .nav-link.active {
-    background-color: var(--tvd-destaque);
-    color: var(--tvd-texto-destaque);
-    border-radius: 0.375rem;
+/* no celular, a Cinzel é larga demais para a marca e o botão sanduíche caberem na mesma linha */
+@media (max-width: 575.98px) {
+    #menu .navbar-brand {
+        font-size: 1rem;
+    }
 }
 
-#menu .nav-link {
-    padding-left: 0.75rem;
-    padding-right: 0.75rem;
+@media (max-width: 374.98px) {
+    #menu .navbar-brand {
+        margin-right: 0;
+        font-size: .875rem;
+    }
+
+    #menu .navbar-brand img {
+        width: 32px;
+        height: 32px;
+    }
+}
+
+/* espaço dos lados dos links em todas as larguras: o Bootstrap zera o --bs-nav-link-padding-x
+   no .navbar-nav e só usa o --bs-navbar-nav-link-padding-x a partir de 992px */
+#menu .navbar-nav {
+    --bs-nav-link-padding-x: .75rem;
+}
+
+/* item ativo do menu: texto na cor principal com sublinhado dourado de 2px (D7, design das páginas);
+   propriedades separadas, porque o Safari descarta o atalho text-decoration com a espessura */
+#menu .nav-link.active {
+    color: var(--tvd-texto);
+    text-decoration-line: underline;
+    text-decoration-thickness: 2px;
+    text-decoration-color: var(--tvd-link);
+    text-underline-offset: .5rem;
 }
 
 /* botões: o .btn-primary e o .btn-outline-primary do Bootstrap com as cores da paleta */
@@ -170,4 +210,111 @@ main {
 #rodape {
     border-top: 1px solid var(--tvd-borda);
     color: var(--tvd-texto-secundario);
+}
+
+/* card de recurso: o <button> do ui.js (ou o <a> da inicial) que envolve o .card */
+.card-recurso {
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    border-radius: var(--bs-card-border-radius);
+    background: none;
+    color: inherit;
+    text-align: start;
+    text-decoration: none;
+}
+
+.card-recurso .card {
+    --tvd-sombra: rgba(42, 26, 20, .14);
+    height: 100%;
+    border-color: transparent;
+    box-shadow: 0 1px 3px var(--tvd-sombra), 0 6px 16px var(--tvd-sombra);
+    transition: box-shadow .15s, transform .15s;
+}
+
+[data-bs-theme="dark"] .card-recurso .card {
+    --tvd-sombra: rgba(0, 0, 0, .5);
+}
+
+.card-recurso:hover .card {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 6px var(--tvd-sombra), 0 12px 28px var(--tvd-sombra);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .card-recurso .card {
+        transition: none;
+        transform: none !important;
+    }
+}
+
+/* foto (img.card-img-top.foto-recurso) e iniciais no card: retrato 4:5 no topo */
+.card-recurso .foto-recurso,
+.card-recurso .iniciais {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    border-radius: var(--bs-card-inner-border-radius) var(--bs-card-inner-border-radius) 0 0;
+}
+
+.card-recurso .iniciais {
+    font-size: 2.5rem;
+}
+
+/* pôster de temporada: sempre 2:3, ocupando a largura */
+.card-recurso .foto-recurso.poster {
+    aspect-ratio: 2 / 3;
+}
+
+/* iniciais no lugar da foto (D5): vinho cheio com as letras claras */
+.iniciais {
+    display: grid;
+    place-items: center;
+    background-color: var(--tvd-destaque);
+    color: var(--tvd-texto-destaque);
+    font-family: var(--tvd-fonte-titulo);
+    font-weight: 700;
+    letter-spacing: .05em;
+}
+
+/* selo das famílias fundadoras */
+.selo-fundadora {
+    display: inline-block;
+    padding: .125rem .5rem;
+    border: 1px solid currentColor;
+    border-radius: 50rem;
+    color: var(--tvd-link);
+    font-size: .75rem;
+    font-weight: 600;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+}
+
+/* contagem e "Ver todos" nos atalhos da inicial */
+.contagem {
+    font-size: 2.25rem;
+    line-height: 1;
+}
+
+.card-recurso .ver-todos {
+    color: var(--tvd-link);
+}
+
+/* modal (.modal-lg no desktop): foto ou iniciais com 200px em 4:5 */
+.modal .foto-detalhe,
+.modal .iniciais {
+    width: 200px;
+    max-width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    border-radius: var(--bs-border-radius);
+    font-size: 3rem;
+}
+
+/* <dl class="row"> com <dt class="col-sm-4"> e <dd class="col-sm-8"> */
+.modal dt {
+    color: var(--tvd-texto-secundario);
+    font-weight: 600;
 }
