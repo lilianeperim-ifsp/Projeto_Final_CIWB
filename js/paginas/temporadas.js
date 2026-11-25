@@ -37,7 +37,7 @@ function mostrarTemporadas(lista){
 
 
 // '2009-09-10' e '2010-05-13' → '2009–2010'; se começa e termina no mesmo ano, só '2009'
-function formatarPeriodo(inicio, fim){
+function formatarPeriodoTemporada(inicio, fim){
 
     if (!inicio){
         return 'Período não informado';
@@ -61,7 +61,7 @@ function formatarPeriodo(inicio, fim){
 
 
 // '22 episódios', ou '1 episódio'
-function textoEpisodios(quantidade){
+function textoEpisodiosTemporada(quantidade){
 
     if (quantidade === 1){
         return '1 episódio';
@@ -76,8 +76,8 @@ function textoEpisodios(quantidade){
 function montarCardTemporada(temporada){
 
     const linhas = [
-        formatarPeriodo(temporada.premiereDate, temporada.endDate),
-        textoEpisodios(temporada.episodeCount)
+        formatarPeriodoTemporada(temporada.premiereDate, temporada.endDate),
+        textoEpisodiosTemporada(temporada.episodeCount)
     ];
 
     return criarCard(temporada.name, linhas, temporada.image, `Pôster da ${temporada.name}`, true);
@@ -88,6 +88,9 @@ function montarCardTemporada(temporada){
 function montarDetalhesTemporada(temporada, valorEpisodios){
 
     const foto = criarFotoDetalhe(temporada.image, `Pôster da ${temporada.name}`, temporada.name);
+
+    // o .poster deixa o pôster inteiro em 2:3 no modal, como no card (regra no style.css)
+    foto.classList.add('poster');
 
     const detalhes = criarListaDetalhes([
         ['Estreia', formatarData(temporada.premiereDate)],

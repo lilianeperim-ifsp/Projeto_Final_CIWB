@@ -19,7 +19,7 @@ Depois disso:
   3. o `salvarCache` (`js/cache.js`) ganhou `try/catch`. Se o `setItem` falhar (armazenamento cheio), os dados da API continuam sendo usados. Antes, a falha caía no `catch` do `fetch` e aparecia como "Sem conexão";
   4. as cinco contagens da inicial agora são pedidas ao mesmo tempo: as Promises vão para um array, e um segundo `for` espera cada uma na ordem dos atalhos;
   5. `#menu .navbar-nav { --bs-nav-link-padding-x: .75rem; }`, para os links do menu não ficarem colados na borda abaixo de 992px. O Bootstrap só usa o `--bs-navbar-nav-link-padding-x` a partir do `lg`;
-  6. a memória `2026-11-23-revisao-do-pr-12.md` mostrava a regex do `busca.js` com os caracteres combinantes invisíveis. Agora mostra `/[̀-ͯ]/g`.
+  6. a memória `2026-11-23-revisao-do-pr-12.md` mostrava a regex do `busca.js` com os caracteres combinantes invisíveis. Agora mostra `/[\u0300-\u036f]/g`.
 - **Os itens 2 e 3 foram corrigidos no `cache.js`, e não no `api.js` nem no `inicio.js`.** Assim todas as páginas ficam protegidas, e o `api.js` não mudou. A ideia de tratar o erro só no `inicio.js` foi descartada.
 - **O `Promise.all` foi trocado pelo array de Promises** (item 4), porque não aparece nos slides nem nos exemplos do professor (só `async/await` e Promise, RNF04).
 - **Na segunda revisão foi conferido:** `node --check` sem erro em `cache.js`, `api.js`, `inicio.js` e `busca.js`; zero caracteres entre U+0300 e U+036F na memória e no `busca.js`; preview da Vercel montado sem erro.
