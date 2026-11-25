@@ -330,6 +330,12 @@ h1, h2, h3, h4, h5, h6,
     aspect-ratio: 2 / 3;
 }
 
+/* cena do episódio no modal: paisagem de 250×140 da TVMaze, no tamanho original */
+.modal .foto-detalhe.cena {
+    width: 250px;
+    aspect-ratio: 25 / 14;
+}
+
 /* <dl class="row"> com <dt class="col-sm-4"> e <dd class="col-sm-8"> */
 .modal dt {
     color: var(--tvd-texto-secundario);
