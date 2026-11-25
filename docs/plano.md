@@ -13,6 +13,7 @@ Trabalho final em dupla (Alexandre e Liliane) de ARQCIWB, IFSP Araraquara, com e
 - **Estilo do professor** (exemplos `11.json/cep`, `11.json/randomuser`, `13.webstorage/exemplo2`): `async function` + `const resposta = await fetch(url)` + `if (!resposta.ok) {...} else {...}`; `querySelector`; `createElement` + `textContent` + `appendChild`; `innerHTML = ''` para limpar; `window.onload = function(){...}`; eventos por propriedade (`botao.onclick`, `campo.oninput`, `form.onsubmit` com `e.preventDefault()`); `localStorage.setItem(chave, JSON.stringify(obj))` e `JSON.parse(localStorage.getItem(chave))`; `<script src>` comum no fim do `<body>`, **nunca `import`/`export`**; nomes em português e camelCase (`botCadastrar`, `divCadastrados`, `jsonUser`), comentários em português.
 - **API conferida ao vivo:** CORS `*`; página inexistente devolve 404; todas as páginas dos 5 recursos somam ≈ **203 KB** de JSON (episódios ≈ 165 KB, maior resumo com 1.056 caracteres).
 - **Personagens com dados faltando (conferido em 2026-11-15):** 14 têm foto (Elena, Stefan, Damon, Caroline, Bonnie, Matt, Jeremy, Tyler, Alaric, Katherine, Klaus, Jenna, Vicki, Enzo). Os outros **35 têm `image: null`**, entre eles Elijah Mikaelson (id 12). **10 têm `family: null`**: Silas (id 21), Valerie, Anna, Pearl, Lexi, Rose e Hayley, todos sem foto também. Episódios, temporadas, espécies e famílias vêm completos.
+- **Atualização de 2026-11-25:** a tvd-api ganhou fotos e agora **os 49 personagens têm `image` preenchido**; nenhum cai mais nas iniciais pelos dados. 48 fotos vêm do TVmaze; a de Tatia Petrova (id 23) vem do Fandom, que recusa o acesso sem `Referer` (403), e por isso a foto que não carrega também vira iniciais (D5). Continuam **10 com `family: null`** (agora Alaric, Jenna, Enzo, Silas, Valerie, Anna, Pearl, Lexi, Rose e Hayley) e **34 com `episodeCount: null`** (Elijah entre eles).
 - **Tamanho das relações:** a espécie "Humano" tem 24 personagens e "Vampiro" 17; famílias têm de 2 a 7; temporadas, de 16 a 23 episódios.
 - **`gh` 2.103 está instalado**, e você tem permissão de escrita no repositório.
 
@@ -214,7 +215,7 @@ Um modal só, criado pelo `ui.js` na primeira abertura. O conteúdo é uma `<dl>
 
 **Campos vazios:** vários personagens vêm com `episodeCount: null` (Elijah, Rebekah e outros sem foto). Nesse caso o modal mostra "Não informado" no lugar do número.
 
-**Foto (D5):** a regra olha o próprio item, não uma lista fixa nem uma contagem. Se `image` vier preenchido, aparece a foto; se vier `null`, aparecem as iniciais. Se a tvd-api ganhar mais fotos, o site passa a mostrar sem nenhuma mudança no código.
+**Foto (D5):** a regra olha o próprio item, não uma lista fixa nem uma contagem. Se `image` vier preenchido, aparece a foto; se vier `null`, aparecem as iniciais. Se a tvd-api ganhar mais fotos, o site passa a mostrar sem nenhuma mudança no código (foi o que aconteceu em 25/11). Se a foto não carregar (link quebrado ou bloqueado), o `onerror` do `<img>` troca a foto pelas iniciais, no card e no modal.
 
 ### Ponto 8 — Lista (RF04)
 Cards em grade Bootstrap (`row-cols-1 row-cols-sm-2 row-cols-lg-4`); cada card é um `<button type="button">`.
@@ -283,7 +284,7 @@ Como a Fase 1 é feita em paralelo, os nomes abaixo (funções, IDs e classes) s
   preencherModal(abertura, conteudo);
   ```
 
-- `criarFotoDetalhe(imagem, alt, nome)` → `<img class="foto-detalhe">`, ou as iniciais quando `imagem` é `null`
+- `criarFotoDetalhe(imagem, alt, nome)` → `<img class="foto-detalhe">`, ou as iniciais quando `imagem` é `null` ou a foto não carrega (`onerror`, como no `criarCard`)
 - `criarDetalhesComFoto(foto, detalhes)` → linha com a foto à esquerda e os detalhes à direita (`col-md-auto` + `col-md`); abaixo de 768px a foto fica em cima
 - `criarSpinner(texto)` → `role="status"` com o spinner do Bootstrap
 - `criarAvisoErro(mensagem)` → `<div class="alert alert-danger" role="alert">`, para o modal quando as relações não chegam: `preencherModal(abertura, criarAvisoErro('Não foi possível carregar os personagens…'))`
@@ -360,7 +361,7 @@ O `data-bs-theme="dark"` escrito no `<html>` é a reserva para quando o JavaScri
    - o modal abre com spinner;
    - `buscarRelacionados(silas.species)` → nomes das espécies;
    - `family` é `null` → "Sem família registrada";
-   - o modal é preenchido com as iniciais "S" (`aria-label="Sem foto de Silas"`), ator, espécies, família, descrição e episódios.
+   - o modal é preenchido com a foto (desde 25/11 a tvd-api tem foto do Silas; antes eram as iniciais "S"), ator, espécies, família, descrição e episódios.
 8. Recarregar → a aba Network mostra **0 requisições** à tvd-api (RN02).
 
 ---
@@ -524,9 +525,11 @@ Pelo navegador: `https://github.com/lilianeperim-ifsp/Projeto_Final_CIWB/compare
 1. **RN01/RN02:** limpar o cache → abrir Episódios → Network com 18 + 1 requisições e as chaves em *Local Storage*. Recarregar → 0. Abrir Temporadas → 1 requisição (as páginas de episódios já estão salvas, então o modal não faz nenhuma).
 2. **RF03:** contagens 49/171/8/9/10 e o progresso "página N de 18" na primeira visita.
 3. **RF05:** um modal de cada recurso, com as relações em nomes:
-   - **Silas** (id 21, `image` e `family` nulos) mostra as iniciais "S" e "Sem família registrada";
-   - **Elijah Mikaelson** (id 12, sem foto, com família) mostra as iniciais "EM" e a família Mikaelson;
-   - **Elena Gilbert** mostra a foto.
+   - **Silas** (id 21, `family` nulo) mostra a foto e "Sem família registrada";
+   - **Elijah Mikaelson** (id 12, `episodeCount` nulo, com família) mostra a foto, a família Mikaelson e "Não informado" nos episódios;
+   - **Elena Gilbert** mostra a foto, a família Gilbert e "Humano, Doppelgänger, Vampiro";
+   - **Tatia Petrova** (id 23, foto do Fandom) mostra a foto ou, se ela não carregar, as iniciais "TP", sem imagem quebrada;
+   - iniciais: desde 25/11 todos os personagens têm `image`, então para ver as iniciais é preciso bloquear as imagens (DevTools → Network → *Block request domain* `static.tvmaze.com`) e conferir "EM" no card do Elijah.
 4. **RF06/RF07:** busca com e sem acento, sem resultado e com o campo vazio de novo.
 5. **Erro:** DevTools *Offline* + cache limpo → alerta e "Tentar novamente".
 6. **RNF01:** 375/768/1280 px em todas as páginas; o menu sanduíche funciona.
@@ -544,7 +547,7 @@ Pelo navegador: `https://github.com/lilianeperim-ifsp/Projeto_Final_CIWB/compare
 | D2 | Relações resolvidas pela lista do recurso | Aprovada |
 | D3 | `<script>` comum, sem módulos | Aprovada |
 | D4 | Botão "Limpar dados salvos" no rodapé | Aprovada |
-| D5 | Sem foto → iniciais | **Aprovada.** A regra é por item (`image` preenchido → foto; `null` → iniciais), sem depender de quantos estão sem foto. |
+| D5 | Sem foto → iniciais | **Aprovada.** A regra é por item (`image` preenchido → foto; `null` → iniciais), sem depender de quantos estão sem foto. Em 25/11: foto que não carrega também vira iniciais (`onerror`), porque a tvd-api passou a ter foto para todos, uma delas fora do TVmaze. |
 | D6 | Sem imagem nos cards de episódio | Aprovada |
 | D7 | Nome do site e cores | **Fechada em 17/11 pela dupla:** nome "Diários de Mystic Falls", paleta "Grimório" (vinho com dourado, um vinho mais claro no modo escuro), com modo claro e modo escuro. A primeira visita segue o tema do sistema; o botão no menu troca e salva a escolha (`js/tema.js`, no `<head>`). Detalhes em `docs/identidade-visual.md`. |
 | D8 | Quem faz os compartilhados | **Dividido:** Alexandre faz `cache.js`, `api.js`, `busca.js`, `ui.js` e Espécies; Liliane faz os HTMLs, `layout.js`, `style.css`, `img/`, `index.html` e `inicio.js`. Um dono por arquivo (seção 7). |
