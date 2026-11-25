@@ -72,7 +72,7 @@ function montarDetalhesPersonagem(personagem, valorEspecies, valorFamilia){
 // abre o modal na hora com a foto e os dados do personagem; o spinner fica só nas espécies e na família (RF05)
 async function abrirDetalhesPersonagem(personagem){
 
-    const abertura = abrirModal(personagem.name, montarDetalhesPersonagem(personagem, criarSpinner('Carregando…'), criarSpinner('Carregando…')));
+    const abertura = abrirModal(personagem.name, montarDetalhesPersonagem(personagem, criarSpinner('Carregando espécies…'), criarSpinner('Carregando família…')));
 
     // dispara as duas buscas juntas; as listas de espécies e de famílias saem do cache depois da primeira vez (RN02)
     const pedidoEspecies = buscarRelacionados(personagem.species);
