@@ -150,6 +150,11 @@ function criarCard(titulo, linhas, imagem, alt, ehPoster){
             img.classList.add('poster');
         }
 
+        // se a foto não carregar (link quebrado ou bloqueado), as iniciais entram no lugar dela (D5)
+        img.onerror = function(){
+            img.parentNode.replaceChild(criarIniciais(titulo), img);
+        };
+
         card.appendChild(img);
     }
     else if (imagem === null){
@@ -313,7 +318,7 @@ function criarAvisoErro(mensagem){
 }
 
 
-// foto do modal, ou as iniciais quando o item não tem foto
+// foto do modal, ou as iniciais quando o item não tem foto ou a foto não carrega
 function criarFotoDetalhe(imagem, alt, nome){
 
     if (imagem === null){
@@ -324,6 +329,11 @@ function criarFotoDetalhe(imagem, alt, nome){
     img.className = 'foto-detalhe';
     img.src = imagem;
     img.alt = alt;
+
+    // o mesmo do card: link quebrado ou bloqueado vira as iniciais (D5)
+    img.onerror = function(){
+        img.parentNode.replaceChild(criarIniciais(nome), img);
+    };
 
     return img;
 }
