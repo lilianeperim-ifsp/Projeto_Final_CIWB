@@ -142,6 +142,18 @@ h1, h2, h3, h4, h5, h6,
     font-weight: 600;
 }
 
+/* botão de tema numa linha só: entre 992 e 1200px, com os seis links, "Modo claro" quebrava em duas;
+   nessa faixa os links ficam com menos espaço dos lados, para o botão caber sem passar da borda */
+#botao-tema {
+    white-space: nowrap;
+}
+
+@media (min-width: 992px) and (max-width: 1199.98px) {
+    #menu {
+        --bs-navbar-nav-link-padding-x: .5rem;
+    }
+}
+
 /* no celular, a Cinzel é larga demais para a marca e o botão sanduíche caberem na mesma linha */
 @media (max-width: 575.98px) {
     #menu .navbar-brand {
@@ -311,6 +323,11 @@ h1, h2, h3, h4, h5, h6,
     object-fit: cover;
     border-radius: var(--bs-border-radius);
     font-size: 3rem;
+}
+
+/* pôster de temporada no modal: sempre 2:3, como no card */
+.modal .foto-detalhe.poster {
+    aspect-ratio: 2 / 3;
 }
 
 /* <dl class="row"> com <dt class="col-sm-4"> e <dd class="col-sm-8"> */
