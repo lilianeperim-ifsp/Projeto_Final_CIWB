@@ -238,14 +238,55 @@ h1, h2, h3, h4, h5, h6,
     --bs-nav-link-padding-x: .75rem;
 }
 
-/* item ativo do menu: texto na cor principal com sublinhado dourado de 2px (D7, design das páginas);
-   propriedades separadas, porque o Safari descarta o atalho text-decoration com a espessura */
+/* links do menu com sublinhado dourado de 2px (D7, design das páginas): no hover e no foco do teclado,
+   o traço cresce do centro para os lados; na página aberta, fica fixo.
+   o traço é um ::after com o mesmo recuo do texto, que muda em 992px: abaixo disso o Bootstrap usa o
+   --bs-nav-link-padding-x, e a partir dele o --bs-navbar-nav-link-padding-x */
+#menu .nav-link {
+    --tvd-recuo: var(--bs-nav-link-padding-x);
+    position: relative;
+}
+
+@media (min-width: 992px) {
+    #menu .nav-link {
+        --tvd-recuo: var(--bs-navbar-nav-link-padding-x);
+    }
+}
+
+/* no menu sanduíche, cada link ocupa a linha inteira; com inline-block, o traço fica só do tamanho do texto */
+@media (max-width: 991.98px) {
+    #menu .nav-link {
+        display: inline-block;
+    }
+}
+
+#menu .nav-link::after {
+    content: "";
+    position: absolute;
+    right: var(--tvd-recuo);
+    bottom: .25rem;
+    left: var(--tvd-recuo);
+    height: 2px;
+    border-radius: 1px;
+    background-color: var(--tvd-link);
+    transform: scaleX(0);
+    transition: transform .25s ease;
+}
+
+#menu .nav-link:hover::after,
+#menu .nav-link:focus-visible::after,
+#menu .nav-link.active::after {
+    transform: scaleX(1);
+}
+
 #menu .nav-link.active {
     color: var(--tvd-texto);
-    text-decoration-line: underline;
-    text-decoration-thickness: 2px;
-    text-decoration-color: var(--tvd-link);
-    text-underline-offset: .5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #menu .nav-link::after {
+        transition: none;
+    }
 }
 
 /* botões: o .btn-primary e o .btn-outline-primary do Bootstrap com as cores da paleta */
