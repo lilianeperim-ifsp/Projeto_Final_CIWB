@@ -733,6 +733,66 @@ h1, h2, h3, h4, h5, h6,
     color: var(--tvd-texto-destaque);
 }
 
+/* hover dos cards de Personagens, como o dos atalhos da inicial: além de subir com a sombra (.card-recurso),
+   a borda e o nome ficam dourados e uma seta entra no canto; vale também para o foco do teclado */
+.pagina-personagens .card-recurso .card {
+    transition: box-shadow .15s, transform .15s, border-color .2s;
+}
+
+.pagina-personagens .card-recurso .card-body {
+    position: relative;
+}
+
+/* espaço à direita do nome, para a seta não cobrir nomes compridos */
+.pagina-personagens .card-recurso .card-title {
+    padding-right: 1.5rem;
+    transition: color .2s;
+}
+
+.pagina-personagens .card-recurso .card-body::after {
+    content: "→";
+    position: absolute;
+    top: var(--bs-card-spacer-y);
+    right: var(--bs-card-spacer-x);
+    color: var(--tvd-link);
+    font-weight: 700;
+    opacity: 0;
+    transform: translateX(-.5rem);
+    transition: opacity .2s, transform .2s;
+}
+
+.pagina-personagens .card-recurso:hover .card,
+.pagina-personagens .card-recurso:focus-visible .card {
+    border-color: var(--tvd-link);
+}
+
+.pagina-personagens .card-recurso:focus-visible .card {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 6px var(--tvd-sombra), 0 12px 28px var(--tvd-sombra);
+}
+
+.pagina-personagens .card-recurso:hover .card-title,
+.pagina-personagens .card-recurso:focus-visible .card-title {
+    color: var(--tvd-link);
+}
+
+.pagina-personagens .card-recurso:hover .card-body::after,
+.pagina-personagens .card-recurso:focus-visible .card-body::after {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .pagina-personagens .card-recurso .card,
+    .pagina-personagens .card-recurso .card-body::after {
+        transition: none;
+    }
+
+    .pagina-personagens .card-recurso:focus-visible .card {
+        transform: none;
+    }
+}
+
 /* trecho da descrição no card: duas linhas, com reticências; a descrição inteira fica no modal */
 .trecho {
     display: -webkit-box;
