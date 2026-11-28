@@ -454,6 +454,8 @@ h1, h2, h3, h4, h5, h6,
 }
 
 .atalho {
+    --tvd-sombra: rgba(42, 26, 20, .14);
+    position: relative;
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -463,18 +465,63 @@ h1, h2, h3, h4, h5, h6,
     background-color: var(--tvd-superficie);
     color: var(--tvd-texto);
     text-decoration: none;
-    transition: border-color .15s;
+    transition: border-color .2s, box-shadow .2s, transform .2s;
 }
 
-.atalho:hover {
+[data-bs-theme="dark"] .atalho {
+    --tvd-sombra: rgba(0, 0, 0, .5);
+}
+
+/* seta no canto direito, escondida e um pouco à esquerda; no hover, aparece deslizando */
+.atalho::after {
+    content: "→";
+    position: absolute;
+    top: .75rem;
+    right: .9rem;
+    color: var(--tvd-link);
+    font-weight: 700;
+    opacity: 0;
+    transform: translateX(-.5rem);
+    transition: opacity .2s, transform .2s;
+}
+
+/* hover e foco do teclado: o card sobe como os .card-recurso, e a borda, o número e a seta ficam dourados */
+.atalho:hover,
+.atalho:focus-visible {
     border-color: var(--tvd-link);
     color: var(--tvd-texto);
+    box-shadow: 0 2px 6px var(--tvd-sombra), 0 12px 28px var(--tvd-sombra);
+    transform: translateY(-2px);
+}
+
+.atalho:hover .contagem,
+.atalho:focus-visible .contagem {
+    color: var(--tvd-link);
+}
+
+.atalho:hover::after,
+.atalho:focus-visible::after {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .atalho,
+    .atalho::after {
+        transition: none;
+    }
+
+    .atalho:hover,
+    .atalho:focus-visible {
+        transform: none;
+    }
 }
 
 .contagem {
     font-size: 1.75rem;
     line-height: 1.1;
     font-variant-numeric: tabular-nums;
+    transition: color .2s;
 }
 
 .atalho-nome {
