@@ -899,11 +899,35 @@ h1, h2, h3, h4, h5, h6,
     font-weight: 400;
 }
 
-.perfil-navegar button:hover .perfil-nome,
-.perfil-navegar button:focus-visible .perfil-nome {
-    text-decoration: underline;
-    text-decoration-thickness: 2px;
-    text-underline-offset: .3rem;
+/* nome do anterior/próximo com o mesmo sublinhado animado do menu e dos posts:
+   traço dourado de 2px que cresce do centro para os lados no hover e no foco do teclado */
+.perfil-nome {
+    position: relative;
+    display: inline-block;
+}
+
+.perfil-nome::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: -.2rem;
+    left: 0;
+    height: 2px;
+    border-radius: 1px;
+    background-color: var(--tvd-link);
+    transform: scaleX(0);
+    transition: transform .25s ease;
+}
+
+.perfil-navegar button:hover .perfil-nome::after,
+.perfil-navegar button:focus-visible .perfil-nome::after {
+    transform: scaleX(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .perfil-nome::after {
+        transition: none;
+    }
 }
 
 /* trecho da descrição no card: duas linhas, com reticências; a descrição inteira fica no modal */
