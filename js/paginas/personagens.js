@@ -1,9 +1,12 @@
 // js/paginas/personagens.js: página de personagens em formato de blog. Mínimo: Liliane (PR L1). Dona da página: Liliane.
 // capa no HTML, os três protagonistas em destaque e a grade com a busca; cada personagem mostra etiquetas
-// com as espécies e a família, e o modal continua com as espécies e a família resolvidas pela URL
+// com as espécies e a família, e o modal é uma ficha com anterior e próximo
 
 // os 49 personagens, guardados para a busca filtrar sem nova requisição (RN02)
 let personagens = [];
+
+// a lista que está na tela (inteira ou filtrada pela busca), para o anterior e o próximo do modal
+let listaMostrada = [];
 
 // URL → nome ('https://tvd-api.vercel.app/api/species/2' → 'Vampiro'), para as etiquetas;
 // ficam null se a lista não chegar, e aí os cards aparecem sem aquelas etiquetas
@@ -166,6 +169,8 @@ function mostrarDestaques(lista){
 // desenha os cards; a busca chama esta mesma função com a lista filtrada
 function mostrarPersonagens(lista){
 
+    listaMostrada = lista;
+
     mostrarLista(lista, montarCardPersonagem, abrirDetalhesPersonagem);
 }
 
@@ -185,88 +190,155 @@ function montarCardPersonagem(personagem){
 }
 
 
-// foto à esquerda e os dados à direita; valorEspecies e valorFamilia são o spinner, o texto ou o aviso de erro
-function montarDetalhesPersonagem(personagem, valorEspecies, valorFamilia){
+// ficha do modal: foto à esquerda; à direita o ator, as etiquetas, a descrição em destaque e a linha
+// com episódios e família; embaixo, o anterior e o próximo da lista (RF05)
+function montarDetalhesPersonagem(personagem){
 
     const foto = criarFotoDetalhe(personagem.image, `Foto de ${personagem.name}`, personagem.name);
 
-    // vários personagens vêm com episodeCount null
+    const info = document.createElement('div');
+    info.className = 'perfil-info';
+
+    const ator = document.createElement('p');
+    ator.className = 'text-body-secondary mb-0';
+    ator.textContent = personagem.actor;
+    info.appendChild(ator);
+
+    info.appendChild(criarEtiquetasPersonagem(personagem));
+
+    // as listas de espécies e de famílias vêm na carga da página; se não chegaram, as etiquetas ficam incompletas
+    if (especiesPorUrl === null || familiasPorUrl === null){
+        info.appendChild(criarAvisoErro('Não foi possível carregar as espécies e a família. Confira a sua conexão e tente novamente.'));
+    }
+
+    const descricao = document.createElement('p');
+    descricao.className = 'perfil-descricao';
+    descricao.textContent = personagem.description;
+    info.appendChild(descricao);
+
+    info.appendChild(criarDadosPersonagem(personagem));
+
+    const conteudo = document.createElement('div');
+    conteudo.appendChild(criarDetalhesComFoto(foto, info));
+    conteudo.appendChild(criarNavegacaoPersonagem(personagem));
+
+    return conteudo;
+}
+
+
+// linha com o número de episódios e a família, cada um com o rótulo em negrito
+function criarDadosPersonagem(personagem){
+
+    // 34 personagens vêm com episodeCount null
     let episodios = 'Não informado';
 
     if (personagem.episodeCount !== null){
         episodios = personagem.episodeCount;
     }
 
-    const detalhes = criarListaDetalhes([
-        ['Ator', personagem.actor],
-        ['Espécies', valorEspecies],
-        ['Família', valorFamilia],
-        ['Episódios', episodios],
-        ['Descrição', personagem.description]
-    ]);
+    let familia = 'Sem família registrada';
 
-    return criarDetalhesComFoto(foto, detalhes);
+    if (personagem.family !== null && familiasPorUrl !== null && familiasPorUrl[personagem.family] !== undefined){
+        familia = familiasPorUrl[personagem.family];
+    }
+
+    const dados = document.createElement('p');
+    dados.className = 'perfil-dados';
+
+    for (let [rotulo, valor] of [['Episódios', episodios], ['Família', familia]]){
+
+        const item = document.createElement('span');
+
+        // 'Episódios: 171', com o espaço no texto, para o leitor de tela não juntar rótulo e valor
+        const b = document.createElement('b');
+        b.textContent = `${rotulo}:`;
+
+        item.appendChild(b);
+        item.appendChild(document.createTextNode(` ${valor}`));
+
+        dados.appendChild(item);
+    }
+
+    return dados;
 }
 
 
-// abre o modal na hora com a foto e os dados do personagem; o spinner fica só nas espécies e na família (RF05)
-async function abrirDetalhesPersonagem(personagem){
+// rodapé do modal com o personagem anterior e o próximo da lista que está na tela
+// (aberto pelos destaques com a busca escondendo o personagem, segue a lista inteira)
+function criarNavegacaoPersonagem(personagem){
 
-    const abertura = abrirModal(personagem.name, montarDetalhesPersonagem(personagem, criarSpinner('Carregando espécies…'), criarSpinner('Carregando família…')));
+    let lista = listaMostrada;
 
-    // dispara as duas buscas juntas; as listas de espécies e de famílias saem do cache depois da primeira vez (RN02)
-    const pedidoEspecies = buscarRelacionados(personagem.species);
-
-    // sem família (family null), não há o que buscar
-    let pedidoFamilia = null;
-
-    if (personagem.family !== null){
-        pedidoFamilia = buscarRelacionados([personagem.family]);
+    if (!lista.includes(personagem)){
+        lista = personagens;
     }
 
-    const especies = await pedidoEspecies;
+    const posicao = lista.indexOf(personagem);
 
-    let familia = [];
+    const nav = document.createElement('nav');
+    nav.className = 'perfil-navegar';
+    nav.setAttribute('aria-label', 'Outros personagens');
 
-    if (pedidoFamilia !== null){
-        familia = await pedidoFamilia;
+    // no primeiro da lista não há anterior, e no último não há próximo
+    if (posicao > 0){
+        nav.appendChild(criarBotaoNavegar(lista[posicao - 1], 'anterior'));
     }
 
-    preencherModal(abertura, montarDetalhesPersonagem(personagem, textoEspeciesPersonagem(especies), textoFamiliaPersonagem(familia)));
+    if (posicao < lista.length - 1){
+        nav.appendChild(criarBotaoNavegar(lista[posicao + 1], 'proximo'));
+    }
+
+    return nav;
 }
 
 
-// [Humano, Doppelgänger, Vampiro] → 'Humano, Doppelgänger, Vampiro'
-function textoEspeciesPersonagem(especies){
+// botão do rodapé: 'Anterior' + '← Elena Gilbert' ou 'Próximo' + 'Damon Salvatore →'
+function criarBotaoNavegar(alvo, direcao){
 
-    if (especies === null){
-        return criarAvisoErro('Não foi possível carregar as espécies. Confira a sua conexão e tente novamente.');
+    let rotulo = 'Anterior';
+    let nome = `← ${alvo.name}`;
+
+    if (direcao === 'proximo'){
+        rotulo = 'Próximo';
+        nome = `${alvo.name} →`;
     }
 
-    if (especies.length === 0){
-        return 'Nenhuma espécie registrada';
-    }
+    const botao = document.createElement('button');
+    botao.type = 'button';
+    botao.className = `perfil-${direcao}`;
+    botao.setAttribute('aria-label', `${rotulo}: ${alvo.name}`);
 
-    const nomes = [];
+    const spanRotulo = document.createElement('span');
+    spanRotulo.className = 'perfil-rotulo';
+    spanRotulo.textContent = rotulo;
 
-    for (let especie of especies){
-        nomes.push(especie.name);
-    }
+    const spanNome = document.createElement('span');
+    spanNome.className = 'perfil-nome';
+    spanNome.textContent = nome;
 
-    return nomes.join(', ');
+    botao.appendChild(spanRotulo);
+    botao.appendChild(spanNome);
+
+    botao.onclick = function(){
+
+        // com o modal aberto, o abrirModal só troca o título e o conteúdo
+        abrirDetalhesPersonagem(alvo);
+
+        // o botão clicado sumiu com o conteúdo antigo; o foco vai para o botão da mesma direção,
+        // para quem usa o teclado continuar navegando
+        const novoBotao = document.querySelector(`#modal-corpo .perfil-${direcao}`);
+
+        if (novoBotao !== null){
+            novoBotao.focus();
+        }
+    };
+
+    return botao;
 }
 
 
-// [Gilbert] → 'Gilbert'; lista vazia (family null) → 'Sem família registrada'
-function textoFamiliaPersonagem(familia){
+// abre o modal já com tudo, porque as espécies e as famílias vêm na carga da página (RF05)
+function abrirDetalhesPersonagem(personagem){
 
-    if (familia === null){
-        return criarAvisoErro('Não foi possível carregar a família. Confira a sua conexão e tente novamente.');
-    }
-
-    if (familia.length === 0){
-        return 'Sem família registrada';
-    }
-
-    return familia[0].name;
+    abrirModal(personagem.name, montarDetalhesPersonagem(personagem));
 }

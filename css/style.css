@@ -833,6 +833,79 @@ h1, h2, h3, h4, h5, h6,
     }
 }
 
+/* modal de Personagens: ficha com o ator, as etiquetas, a descrição em destaque e anterior/próximo */
+.perfil-info {
+    display: flex;
+    flex-direction: column;
+    gap: .6rem;
+}
+
+.perfil-info .etiquetas {
+    margin-block: 0;
+}
+
+/* descrição com a barra dourada à esquerda, como uma citação */
+.perfil-descricao {
+    margin: .25rem 0 0;
+    padding: .15rem 0 .15rem 1rem;
+    border-left: 3px solid var(--tvd-link);
+    font-size: 1.05rem;
+    line-height: 1.65;
+}
+
+.perfil-dados {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .35rem 1.5rem;
+    margin: 0;
+}
+
+.perfil-dados b {
+    color: var(--tvd-texto-secundario);
+}
+
+/* rodapé com o anterior à esquerda e o próximo à direita */
+.perfil-navegar {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--tvd-borda);
+}
+
+.perfil-navegar button {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--tvd-link);
+    font-weight: 700;
+    text-align: left;
+}
+
+/* o próximo fica sempre à direita, mesmo quando não há anterior (primeiro da lista) */
+.perfil-navegar .perfil-proximo {
+    align-items: flex-end;
+    margin-left: auto;
+    text-align: right;
+}
+
+.perfil-rotulo {
+    color: var(--tvd-texto-secundario);
+    font-size: .75rem;
+    font-weight: 400;
+}
+
+.perfil-navegar button:hover .perfil-nome,
+.perfil-navegar button:focus-visible .perfil-nome {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: .3rem;
+}
+
 /* trecho da descrição no card: duas linhas, com reticências; a descrição inteira fica no modal */
 .trecho {
     display: -webkit-box;
