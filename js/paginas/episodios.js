@@ -1,6 +1,6 @@
 // js/paginas/episodios.js: página de episódios em formato de blog. Mínimo: Liliane (PR L1). Dona da página: Liliane.
 // o episódio mais assistido em destaque e a grade com a cena, a busca pelo título e o filtro por temporada;
-// no modal, a cena do episódio e a ficha completa
+// no modal, a cena e a ficha do episódio, com anterior e próximo
 
 // os 171 episódios, guardados para a busca filtrar sem nova requisição (RN02)
 let episodios = [];
@@ -10,6 +10,9 @@ const temporadasPorUrl = {};
 
 // as 8 temporadas na ordem da API, para as pílulas do filtro
 let temporadas = [];
+
+// a lista que está na tela (filtrada pela temporada e pela busca), para o anterior e o próximo do modal
+let listaMostrada = [];
 
 
 window.onload = async function(){
@@ -60,6 +63,8 @@ window.onload = async function(){
 
 // desenha os cards; a busca chama esta mesma função com a lista filtrada
 function mostrarEpisodios(lista){
+
+    listaMostrada = lista;
 
     mostrarLista(lista, montarCardEpisodio, abrirDetalhesEpisodio);
 }
@@ -258,25 +263,54 @@ function montarCardEpisodio(episodio){
 }
 
 
-// todos os dados já estão no episódio e no mapa de temporadas, então o modal abre sem spinner (RF05)
-function abrirDetalhesEpisodio(episodio){
+// ficha do modal, no mesmo desenho do de Personagens: a cena à esquerda; à direita a temporada, o episódio
+// e a data, o resumo em destaque e a linha com direção, roteiro, audiência, duração e código;
+// embaixo, o anterior e o próximo da lista (RF05)
+function montarDetalhesEpisodio(episodio){
 
     const cena = criarFotoDetalhe(episodio.image, `Cena do episódio ${episodio.title}`, episodio.title);
 
     // a cena é em paisagem; o .cena tira o recorte 4:5 das fotos de personagem
     cena.classList.add('cena');
 
-    const detalhes = criarListaDetalhes([
-        ['Temporada', nomeTemporadaEpisodio(episodio.season)],
-        ['Episódio', episodio.number],
-        ['Exibição', formatarData(episodio.airDate)],
+    const info = document.createElement('div');
+    info.className = 'perfil-info';
+
+    const meta = document.createElement('p');
+    meta.className = 'meta mb-0';
+    meta.textContent = `${nomeTemporadaEpisodio(episodio.season)} · Episódio ${episodio.number} · ${formatarData(episodio.airDate)}`;
+    info.appendChild(meta);
+
+    const resumo = document.createElement('p');
+    resumo.className = 'perfil-descricao';
+    resumo.textContent = episodio.summary;
+    info.appendChild(resumo);
+
+    info.appendChild(criarLinhaDados([
         ['Direção', episodio.directedBy],
         ['Roteiro', episodio.writtenBy],
         ['Audiência nos EUA', textoAudienciaEpisodio(episodio.usViewers)],
-        ['Código de produção', episodio.productionCode],
         ['Duração', `${episodio.runtime} min`],
-        ['Resumo', episodio.summary]
-    ]);
+        ['Código de produção', episodio.productionCode]
+    ]));
 
-    abrirModal(episodio.title, criarDetalhesComFoto(cena, detalhes));
+    // a lista da tela; o destaque pode abrir um episódio que a temporada ou a busca escondeu, e aí segue a lista inteira
+    let lista = listaMostrada;
+
+    if (!lista.includes(episodio)){
+        lista = episodios;
+    }
+
+    const conteudo = document.createElement('div');
+    conteudo.appendChild(criarDetalhesComFoto(cena, info));
+    conteudo.appendChild(criarNavegacaoModal(lista, episodio, 'Outros episódios', (e) => e.title, abrirDetalhesEpisodio));
+
+    return conteudo;
+}
+
+
+// todos os dados já estão no episódio e no mapa de temporadas, então o modal abre sem spinner (RF05)
+function abrirDetalhesEpisodio(episodio){
+
+    abrirModal(episodio.title, montarDetalhesEpisodio(episodio));
 }

@@ -242,29 +242,14 @@ function criarDadosPersonagem(personagem){
         familia = familiasPorUrl[personagem.family];
     }
 
-    const dados = document.createElement('p');
-    dados.className = 'perfil-dados';
-
-    for (let [rotulo, valor] of [['Episódios', episodios], ['Família', familia]]){
-
-        const item = document.createElement('span');
-
-        // 'Episódios: 171', com o espaço no texto, para o leitor de tela não juntar rótulo e valor
-        const b = document.createElement('b');
-        b.textContent = `${rotulo}:`;
-
-        item.appendChild(b);
-        item.appendChild(document.createTextNode(` ${valor}`));
-
-        dados.appendChild(item);
-    }
-
-    return dados;
+    // 'Episódios: 171   Família: Salvatore', montada pelo criarLinhaDados do ui.js
+    return criarLinhaDados([['Episódios', episodios], ['Família', familia]]);
 }
 
 
 // rodapé do modal com o personagem anterior e o próximo da lista que está na tela
-// (aberto pelos destaques com a busca escondendo o personagem, segue a lista inteira)
+// (aberto pelos destaques com a busca escondendo o personagem, segue a lista inteira);
+// os botões são montados pelo criarNavegacaoModal do ui.js, o mesmo de Episódios
 function criarNavegacaoPersonagem(personagem){
 
     let lista = listaMostrada;
@@ -273,67 +258,7 @@ function criarNavegacaoPersonagem(personagem){
         lista = personagens;
     }
 
-    const posicao = lista.indexOf(personagem);
-
-    const nav = document.createElement('nav');
-    nav.className = 'perfil-navegar';
-    nav.setAttribute('aria-label', 'Outros personagens');
-
-    // no primeiro da lista não há anterior, e no último não há próximo
-    if (posicao > 0){
-        nav.appendChild(criarBotaoNavegar(lista[posicao - 1], 'anterior'));
-    }
-
-    if (posicao < lista.length - 1){
-        nav.appendChild(criarBotaoNavegar(lista[posicao + 1], 'proximo'));
-    }
-
-    return nav;
-}
-
-
-// botão do rodapé: 'Anterior' + '← Elena Gilbert' ou 'Próximo' + 'Damon Salvatore →'
-function criarBotaoNavegar(alvo, direcao){
-
-    let rotulo = 'Anterior';
-    let nome = `← ${alvo.name}`;
-
-    if (direcao === 'proximo'){
-        rotulo = 'Próximo';
-        nome = `${alvo.name} →`;
-    }
-
-    const botao = document.createElement('button');
-    botao.type = 'button';
-    botao.className = `perfil-${direcao}`;
-    botao.setAttribute('aria-label', `${rotulo}: ${alvo.name}`);
-
-    const spanRotulo = document.createElement('span');
-    spanRotulo.className = 'perfil-rotulo';
-    spanRotulo.textContent = rotulo;
-
-    const spanNome = document.createElement('span');
-    spanNome.className = 'perfil-nome';
-    spanNome.textContent = nome;
-
-    botao.appendChild(spanRotulo);
-    botao.appendChild(spanNome);
-
-    botao.onclick = function(){
-
-        // com o modal aberto, o abrirModal só troca o título e o conteúdo
-        abrirDetalhesPersonagem(alvo);
-
-        // o botão clicado sumiu com o conteúdo antigo; o foco vai para o botão da mesma direção,
-        // para quem usa o teclado continuar navegando
-        const novoBotao = document.querySelector(`#modal-corpo .perfil-${direcao}`);
-
-        if (novoBotao !== null){
-            novoBotao.focus();
-        }
-    };
-
-    return botao;
+    return criarNavegacaoModal(lista, personagem, 'Outros personagens', (p) => p.name, abrirDetalhesPersonagem);
 }
 
 
