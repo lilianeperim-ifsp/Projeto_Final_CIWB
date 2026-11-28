@@ -27,19 +27,21 @@ function aplicarTema(tema){
     document.documentElement.setAttribute('data-bs-theme', tema);
 }
 
-// escreve no botão o que ele vai fazer: no modo escuro, ativa o claro, e vice-versa
+// diz o que o interruptor vai fazer: no modo escuro, ativa o claro, e vice-versa
+// o botão não tem texto visível, então o aria-label é lido pelo leitor de tela e o title aparece no mouse;
+// a bolinha, o sol e a lua mudam só pelo CSS, a partir do data-bs-theme
 function atualizarBotaoTema(botao){
 
     const temaAtual = document.documentElement.getAttribute('data-bs-theme');
 
+    let rotulo = 'Ativar modo escuro';
+
     if (temaAtual === 'dark'){
-        botao.textContent = 'Modo claro';
-        botao.setAttribute('aria-label', 'Ativar modo claro');
+        rotulo = 'Ativar modo claro';
     }
-    else{
-        botao.textContent = 'Modo escuro';
-        botao.setAttribute('aria-label', 'Ativar modo escuro');
-    }
+
+    botao.setAttribute('aria-label', rotulo);
+    botao.title = rotulo;
 }
 
 // chamada no clique do #botao-tema: aplica o tema oposto e salva a escolha

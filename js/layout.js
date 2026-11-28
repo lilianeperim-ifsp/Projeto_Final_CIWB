@@ -95,11 +95,31 @@ function montarMenu(paginaAtual, raiz){
 
     areaLinks.appendChild(lista);
 
-    // botão de tema: já nasce com o rótulo do tema que o tema.js aplicou no <head>
+    // botão de tema: um interruptor com a bolinha que desliza (sol no modo claro, lua no escuro);
+    // já nasce com o rótulo do tema que o tema.js aplicou no <head>
     const botTema = document.createElement('button');
-    botTema.className = 'btn btn-outline-primary btn-sm ms-lg-3 mb-2 mb-lg-0';
+    botTema.className = 'ms-1 ms-lg-3 mb-2 mb-lg-0';
     botTema.type = 'button';
     botTema.id = 'botao-tema';
+
+    const bolinha = document.createElement('span');
+    bolinha.className = 'bolinha';
+
+    // alt vazio: quem diz o que o botão faz é o aria-label
+    const iconeSol = document.createElement('img');
+    iconeSol.className = 'icone-sol';
+    iconeSol.src = raiz + 'img/sol.svg';
+    iconeSol.alt = '';
+    bolinha.appendChild(iconeSol);
+
+    const iconeLua = document.createElement('img');
+    iconeLua.className = 'icone-lua';
+    iconeLua.src = raiz + 'img/lua.svg';
+    iconeLua.alt = '';
+    bolinha.appendChild(iconeLua);
+
+    botTema.appendChild(bolinha);
+
     atualizarBotaoTema(botTema);
     botTema.onclick = trocarTema;
 

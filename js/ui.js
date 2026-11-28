@@ -416,6 +416,102 @@ function criarListaDeNomes(nomes, numerada){
 }
 
 
+// ---------- ficha do modal (Personagens e Episódios) ----------
+
+// linha com pares [rótulo, valor]: 'Direção: Marcos Siega   Roteiro: Kevin Williamson'
+// o espaço depois dos dois-pontos fica no texto, para o leitor de tela não juntar rótulo e valor
+function criarLinhaDados(pares){
+
+    const dados = document.createElement('p');
+    dados.className = 'perfil-dados';
+
+    for (let [rotulo, valor] of pares){
+
+        const item = document.createElement('span');
+
+        const b = document.createElement('b');
+        b.textContent = `${rotulo}:`;
+
+        item.appendChild(b);
+        item.appendChild(document.createTextNode(` ${valor}`));
+
+        dados.appendChild(item);
+    }
+
+    return dados;
+}
+
+
+// rodapé do modal com o item anterior e o próximo da lista
+// textoDoItem diz o nome que aparece no botão; abrirItem abre o modal do item escolhido
+function criarNavegacaoModal(lista, item, rotulo, textoDoItem, abrirItem){
+
+    const posicao = lista.indexOf(item);
+
+    const nav = document.createElement('nav');
+    nav.className = 'perfil-navegar';
+    nav.setAttribute('aria-label', rotulo);
+
+    // no primeiro da lista não há anterior, e no último não há próximo
+    if (posicao > 0){
+        nav.appendChild(criarBotaoNavegarModal(lista[posicao - 1], 'anterior', textoDoItem, abrirItem));
+    }
+
+    if (posicao !== -1 && posicao < lista.length - 1){
+        nav.appendChild(criarBotaoNavegarModal(lista[posicao + 1], 'proximo', textoDoItem, abrirItem));
+    }
+
+    return nav;
+}
+
+
+// botão do rodapé: 'Anterior' + '← Elena Gilbert' ou 'Próximo' + 'Damon Salvatore →'
+function criarBotaoNavegarModal(alvo, direcao, textoDoItem, abrirItem){
+
+    const nomeAlvo = textoDoItem(alvo);
+
+    let rotulo = 'Anterior';
+    let nome = `← ${nomeAlvo}`;
+
+    if (direcao === 'proximo'){
+        rotulo = 'Próximo';
+        nome = `${nomeAlvo} →`;
+    }
+
+    const botao = document.createElement('button');
+    botao.type = 'button';
+    botao.className = `perfil-${direcao}`;
+    botao.setAttribute('aria-label', `${rotulo}: ${nomeAlvo}`);
+
+    const spanRotulo = document.createElement('span');
+    spanRotulo.className = 'perfil-rotulo';
+    spanRotulo.textContent = rotulo;
+
+    const spanNome = document.createElement('span');
+    spanNome.className = 'perfil-nome';
+    spanNome.textContent = nome;
+
+    botao.appendChild(spanRotulo);
+    botao.appendChild(spanNome);
+
+    botao.onclick = function(){
+
+        // com o modal aberto, o abrirModal só troca o título e o conteúdo
+        abrirItem(alvo);
+
+        // o botão clicado sumiu com o conteúdo antigo; o foco vai para o botão da mesma direção,
+        // para quem usa o teclado continuar navegando
+        const novoBotao = document.querySelector(`#modal-corpo .perfil-${direcao}`);
+
+        if (novoBotao !== null){
+            novoBotao.focus();
+        }
+    };
+
+    return botao;
+}
+
+
 // ---------- formatação ----------
 
 // '2009-09-10' → '10/09/2009' só com split, sem new Date('2009-09-10'),

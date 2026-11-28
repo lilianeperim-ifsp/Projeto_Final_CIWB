@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- pages/episodios.html: página de episódios. Esqueleto: Liliane (PR L1). Dona da página: Liliane. -->
+<!-- pages/episodios.html: página de episódios em formato de blog (topo, episódio em destaque e grade com filtro por temporada). Esqueleto: Liliane (PR L1). Dona da página: Liliane. -->
 <!-- o data-bs-theme="dark" é a reserva para quando o JavaScript não roda; o tema.js sobrescreve -->
 <html lang="pt-BR" data-bs-theme="dark">
 <head>
@@ -19,20 +19,38 @@
         <nav id="menu" class="navbar navbar-expand-lg" aria-label="Menu principal"></nav>
     </header>
 
-    <main class="container py-4">
+    <!-- hover-seta: o hover com seta dos cards (style.css), o mesmo de Personagens -->
+    <main class="container py-4 pagina-episodios hover-seta">
 
-        <h1>Episódios</h1>
-
-        <form id="form-busca" role="search">
-            <label for="campo-busca" class="form-label">Buscar episódio pelo título</label>
-            <input type="search" id="campo-busca" class="form-control" autocomplete="off">
-        </form>
-
-        <p id="mensagem-busca" aria-live="polite"></p>
+        <section class="topo-pagina mb-4" aria-labelledby="titulo-pagina">
+            <p class="meta mb-1">Episódios</p>
+            <h1 id="titulo-pagina">Oito anos em Mystic Falls</h1>
+            <p class="lead mb-0">De 10/09/2009 a 10/03/2017, um episódio por semana. Cada um tem o resumo, quem dirigiu, quem escreveu e quantas pessoas assistiram nos Estados Unidos.</p>
+        </section>
 
         <div id="estado"></div>
 
-        <ul id="lista" class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-3 list-unstyled"></ul>
+        <!-- o episódio mais assistido, montado pelo episodios.js -->
+        <section class="secao-pagina" aria-labelledby="titulo-destaque">
+            <h2 id="titulo-destaque" class="h3 mb-3">Em destaque</h2>
+            <div id="destaque"></div>
+        </section>
+
+        <section class="secao-pagina" aria-labelledby="titulo-todos">
+            <h2 id="titulo-todos" class="h3 mb-3">Todos os episódios</h2>
+
+            <form id="form-busca" role="search">
+                <label for="campo-busca" class="form-label">Buscar episódio pelo título</label>
+                <input type="search" id="campo-busca" class="form-control" autocomplete="off">
+            </form>
+
+            <!-- pílulas Todas, T1 a T8, montadas pelo episodios.js depois que as temporadas chegam -->
+            <div id="filtro-temporadas" class="filtro mt-3" role="group" aria-label="Filtrar por temporada"></div>
+
+            <p id="mensagem-busca" aria-live="polite"></p>
+
+            <ul id="lista" class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-3 list-unstyled"></ul>
+        </section>
 
     </main>
 
