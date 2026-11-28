@@ -1,11 +1,15 @@
-// js/paginas/episodios.js: página de episódios. Mínimo: Liliane (PR L1). Dona da página: Liliane.
-// cards sem imagem (D6) com a temporada vinda do mapa URL → nome; no modal, a cena do episódio e a ficha completa
+// js/paginas/episodios.js: página de episódios em formato de blog. Mínimo: Liliane (PR L1). Dona da página: Liliane.
+// o episódio mais assistido em destaque e a grade com a cena, a busca pelo título e o filtro por temporada;
+// no modal, a cena do episódio e a ficha completa
 
 // os 171 episódios, guardados para a busca filtrar sem nova requisição (RN02)
 let episodios = [];
 
 // URL da temporada → nome ('https://tvd-api.vercel.app/api/seasons/1' → 'Temporada 1')
 const temporadasPorUrl = {};
+
+// as 8 temporadas na ordem da API, para as pílulas do filtro
+let temporadas = [];
 
 
 window.onload = async function(){
@@ -22,7 +26,9 @@ window.onload = async function(){
         return;
     }
 
-    for (let temporada of jsonTemporadas){
+    temporadas = jsonTemporadas;
+
+    for (let temporada of temporadas){
         temporadasPorUrl[temporada.url] = temporada.name;
     }
 
@@ -42,10 +48,12 @@ window.onload = async function(){
         episodios = jsonEpisodios;
 
         esconderCarregando();
-        mostrarEpisodios(episodios);
 
-        // episódios filtram pelo título, e não pelo nome
-        configurarBusca(episodios, 'title', mostrarEpisodios);
+        mostrarDestaqueEpisodio(episodioMaisAssistido(episodios));
+        montarFiltroTemporadas();
+
+        // começa com todas as temporadas; o filtro também liga a busca (RF06)
+        filtrarPorTemporada(null);
     }
 };
 
@@ -77,15 +85,176 @@ function textoAudienciaEpisodio(milhoes){
 }
 
 
-// card sem imagem (D6): título, 'Temporada 1 · Episódio 1' e a data de exibição
+// o episódio com a maior audiência (usViewers); episódios sem audiência ficam de fora
+function episodioMaisAssistido(lista){
+
+    let maior = null;
+
+    for (let episodio of lista){
+
+        if (episodio.usViewers !== null && (maior === null || episodio.usViewers > maior.usViewers)){
+            maior = episodio;
+        }
+    }
+
+    return maior;
+}
+
+
+// destaque: a cena à esquerda e, à direita, a temporada, o título, a data, a audiência, a direção,
+// o resumo e o botão que abre o modal; o artigo inteiro é clicável, como os destaques de Personagens
+function mostrarDestaqueEpisodio(episodio){
+
+    const destaque = document.querySelector('#destaque');
+
+    destaque.innerHTML = '';
+
+    if (episodio === null){
+        return;
+    }
+
+    const artigo = document.createElement('article');
+    artigo.className = 'destaque destaque-episodio';
+
+    const cena = criarFotoDetalhe(episodio.image, `Cena do episódio ${episodio.title}`, episodio.title);
+
+    const texto = document.createElement('div');
+    texto.className = 'destaque-texto';
+
+    const meta = document.createElement('p');
+    meta.className = 'meta mb-0';
+    meta.textContent = `O mais assistido · ${nomeTemporadaEpisodio(episodio.season)} · Episódio ${episodio.number}`;
+
+    const titulo = document.createElement('h3');
+    titulo.className = 'h4 mb-0';
+    titulo.textContent = episodio.title;
+
+    const dados = document.createElement('p');
+    dados.className = 'text-body-secondary mb-1';
+    dados.textContent = `${formatarData(episodio.airDate)} · ${textoAudienciaEpisodio(episodio.usViewers)} de espectadores · Direção de ${episodio.directedBy}`;
+
+    const resumo = document.createElement('p');
+    resumo.className = 'mb-2';
+    resumo.textContent = episodio.summary;
+
+    // botão com cara de link, para o teclado; o clique sobe para o artigo, que abre o modal (RF05)
+    const botLer = document.createElement('button');
+    botLer.type = 'button';
+    botLer.className = 'mais';
+    botLer.textContent = 'Ler o episódio →';
+    botLer.setAttribute('aria-label', `Ler o episódio ${episodio.title}`);
+
+    artigo.onclick = function(){
+        abrirDetalhesEpisodio(episodio);
+    };
+
+    texto.appendChild(meta);
+    texto.appendChild(titulo);
+    texto.appendChild(dados);
+    texto.appendChild(resumo);
+    texto.appendChild(botLer);
+
+    artigo.appendChild(cena);
+    artigo.appendChild(texto);
+
+    destaque.appendChild(artigo);
+}
+
+
+// pílulas Todas, T1 a T8; cada uma é um botão com aria-pressed, para o leitor de tela dizer qual está ativa
+function montarFiltroTemporadas(){
+
+    const filtro = document.querySelector('#filtro-temporadas');
+
+    filtro.innerHTML = '';
+
+    filtro.appendChild(criarPilulaTemporada('Todas', 'Todas as temporadas', null));
+
+    for (let i = 0; i < temporadas.length; i++){
+        filtro.appendChild(criarPilulaTemporada(`T${i + 1}`, temporadas[i].name, temporadas[i].url));
+    }
+}
+
+
+function criarPilulaTemporada(texto, rotulo, urlTemporada){
+
+    const pilula = document.createElement('button');
+    pilula.type = 'button';
+    pilula.className = 'filtro-pilula';
+    pilula.textContent = texto;
+    pilula.setAttribute('aria-label', rotulo);
+    pilula.setAttribute('aria-pressed', 'false');
+
+    // guarda a URL da temporada no botão ('' para Todas), para marcar a pílula ativa depois
+    pilula.dataset.temporada = '';
+
+    if (urlTemporada !== null){
+        pilula.dataset.temporada = urlTemporada;
+    }
+
+    pilula.onclick = function(){
+        filtrarPorTemporada(urlTemporada);
+    };
+
+    return pilula;
+}
+
+
+// mostra só os episódios da temporada (null = todas) e liga a busca a essa lista;
+// assim a busca pelo título e o "Nenhum resultado" funcionam dentro da temporada escolhida (RF06 e RF07)
+function filtrarPorTemporada(urlTemporada){
+
+    let lista = episodios;
+
+    if (urlTemporada !== null){
+
+        lista = [];
+
+        for (let episodio of episodios){
+
+            if (episodio.season === urlTemporada){
+                lista.push(episodio);
+            }
+        }
+    }
+
+    // marca a pílula ativa
+    for (let pilula of document.querySelectorAll('.filtro-pilula')){
+
+        let ativa = pilula.dataset.temporada === '';
+
+        if (urlTemporada !== null){
+            ativa = pilula.dataset.temporada === urlTemporada;
+        }
+
+        pilula.classList.toggle('ativa', ativa);
+        pilula.setAttribute('aria-pressed', String(ativa));
+    }
+
+    mostrarEpisodios(lista);
+
+    // episódios filtram pelo título, e não pelo nome; com um termo já digitado, o configurarBusca
+    // refaz a busca na lista nova e atualiza a mensagem
+    configurarBusca(lista, 'title', mostrarEpisodios);
+}
+
+
+// card com a cena, o título, 'Temporada 1 · Episódio 1', a data de exibição e duas linhas do resumo (RF04);
+// sem cena (image null), o criarCard mostra as iniciais do título (D5)
 function montarCardEpisodio(episodio){
+
+    // o trecho é cortado em duas linhas pelo CSS; o resumo inteiro fica no modal
+    const trecho = document.createElement('span');
+    trecho.className = 'trecho';
+    trecho.textContent = episodio.summary;
 
     const linhas = [
         `${nomeTemporadaEpisodio(episodio.season)} · Episódio ${episodio.number}`,
-        formatarData(episodio.airDate)
+        formatarData(episodio.airDate),
+        trecho
     ];
 
-    return criarCard(episodio.title, linhas);
+    return criarCard(episodio.title, linhas, episodio.image, `Cena do episódio ${episodio.title}`);
 }
 
 

@@ -773,23 +773,24 @@ h1, h2, h3, h4, h5, h6,
     color: var(--tvd-texto-destaque);
 }
 
-/* hover dos cards de Personagens, como o dos atalhos da inicial: além de subir com a sombra (.card-recurso),
-   a borda e o nome ficam dourados e uma seta entra no canto; vale também para o foco do teclado */
-.pagina-personagens .card-recurso .card {
+/* hover dos cards das páginas com .hover-seta no <main> (Personagens e Episódios), como o dos atalhos da inicial:
+   além de subir com a sombra (.card-recurso), a borda e o nome ficam dourados e uma seta entra no canto;
+   vale também para o foco do teclado */
+.hover-seta .card-recurso .card {
     transition: box-shadow .15s, transform .15s, border-color .2s;
 }
 
-.pagina-personagens .card-recurso .card-body {
+.hover-seta .card-recurso .card-body {
     position: relative;
 }
 
 /* espaço à direita do nome, para a seta não cobrir nomes compridos */
-.pagina-personagens .card-recurso .card-title {
+.hover-seta .card-recurso .card-title {
     padding-right: 1.5rem;
     transition: color .2s;
 }
 
-.pagina-personagens .card-recurso .card-body::after {
+.hover-seta .card-recurso .card-body::after {
     content: "→";
     position: absolute;
     top: var(--bs-card-spacer-y);
@@ -801,36 +802,98 @@ h1, h2, h3, h4, h5, h6,
     transition: opacity .2s, transform .2s;
 }
 
-.pagina-personagens .card-recurso:hover .card,
-.pagina-personagens .card-recurso:focus-visible .card {
+.hover-seta .card-recurso:hover .card,
+.hover-seta .card-recurso:focus-visible .card {
     border-color: var(--tvd-link);
 }
 
-.pagina-personagens .card-recurso:focus-visible .card {
+.hover-seta .card-recurso:focus-visible .card {
     transform: translateY(-2px);
     box-shadow: 0 2px 6px var(--tvd-sombra), 0 12px 28px var(--tvd-sombra);
 }
 
-.pagina-personagens .card-recurso:hover .card-title,
-.pagina-personagens .card-recurso:focus-visible .card-title {
+.hover-seta .card-recurso:hover .card-title,
+.hover-seta .card-recurso:focus-visible .card-title {
     color: var(--tvd-link);
 }
 
-.pagina-personagens .card-recurso:hover .card-body::after,
-.pagina-personagens .card-recurso:focus-visible .card-body::after {
+.hover-seta .card-recurso:hover .card-body::after,
+.hover-seta .card-recurso:focus-visible .card-body::after {
     opacity: 1;
     transform: translateX(0);
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .pagina-personagens .card-recurso .card,
-    .pagina-personagens .card-recurso .card-body::after {
+    .hover-seta .card-recurso .card,
+    .hover-seta .card-recurso .card-body::after {
         transition: none;
     }
 
-    .pagina-personagens .card-recurso:focus-visible .card {
+    .hover-seta .card-recurso:focus-visible .card {
         transform: none;
     }
+}
+
+/* ---------- página de Episódios em formato de blog ---------- */
+
+/* cards com a cena em paisagem (25:14, o formato das cenas da API), no lugar do retrato 4:5 */
+.pagina-episodios .card-recurso .foto-recurso,
+.pagina-episodios .card-recurso .iniciais {
+    aspect-ratio: 25 / 14;
+}
+
+.pagina-episodios .card-recurso .iniciais {
+    font-size: 1.75rem;
+}
+
+/* destaque do episódio: a cena até 375px (a da API tem 250px, maior fica borrada) e o texto ao lado */
+.destaque-episodio {
+    display: grid;
+    grid-template-columns: minmax(0, 375px) minmax(0, 1fr);
+    gap: 1.5rem;
+    align-items: center;
+    padding: 1.25rem;
+}
+
+.destaque-episodio .foto-detalhe,
+.destaque-episodio .iniciais {
+    width: 100%;
+    aspect-ratio: 25 / 14;
+    font-size: 2.5rem;
+}
+
+@media (max-width: 767.98px) {
+    .destaque-episodio {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* filtro por temporada: pílulas; a ativa fica em vinho com o texto claro */
+.filtro {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .4rem;
+}
+
+.filtro-pilula {
+    padding: .3rem .85rem;
+    border: 1px solid var(--tvd-borda);
+    border-radius: 50rem;
+    background-color: var(--tvd-superficie);
+    color: var(--tvd-texto);
+    font-size: .875rem;
+    transition: border-color .2s, background-color .2s;
+}
+
+.filtro-pilula:hover {
+    border-color: var(--tvd-link);
+}
+
+.filtro-pilula.ativa {
+    border-color: var(--tvd-destaque);
+    background-color: var(--tvd-destaque);
+    color: var(--tvd-texto-destaque);
+    font-weight: 700;
 }
 
 /* modal de Personagens: ficha com o ator, as etiquetas, a descrição em destaque e anterior/próximo */
