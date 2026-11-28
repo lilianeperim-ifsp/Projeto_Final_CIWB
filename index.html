@@ -22,15 +22,18 @@
     <main class="container py-4">
 
         <!-- capa do blog: a arte da série é do TVmaze, a mesma fonte das fotos da tvd-api (cópia em img/) -->
-        <section class="capa mb-4" aria-labelledby="titulo-site">
-            <figure class="mb-3">
+        <!-- no computador (lg), a imagem inteira fica à esquerda e o título à direita; abaixo disso, a imagem fica em cima -->
+        <section class="capa row g-4 align-items-center mb-4" aria-labelledby="titulo-site">
+            <figure class="col-lg-7 mb-0">
                 <img class="capa-foto" src="img/capa-tvd.jpg" alt="Elenco da série de luto, com guarda-chuvas, diante de um caixão na chuva">
                 <figcaption class="credito">Imagem: <a href="https://www.tvmaze.com/shows/63/the-vampire-diaries">TVmaze</a></figcaption>
             </figure>
 
-            <p class="meta mb-1">O blog da série</p>
-            <h1 id="titulo-site">Diários de Mystic Falls</h1>
-            <p class="lead mb-0">Tudo sobre The Vampire Diaries: quem é quem, o que acontece em cada episódio, de onde vêm as famílias da cidade e onde a série foi gravada.</p>
+            <div class="col-lg-5">
+                <p class="meta mb-1">O blog da série</p>
+                <h1 id="titulo-site">Diários de Mystic Falls</h1>
+                <p class="lead mb-0">Tudo sobre The Vampire Diaries: quem é quem, o que acontece em cada episódio, de onde vêm as famílias da cidade e onde a série foi gravada.</p>
+            </div>
         </section>
 
         <div id="estado"></div>

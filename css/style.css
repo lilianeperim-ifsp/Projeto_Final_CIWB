@@ -365,21 +365,14 @@ h1, h2, h3, h4, h5, h6,
 
 /* ---------- página inicial em formato de blog ---------- */
 
-/* capa: a arte larga da série; no celular fica mais alta, para o elenco não sumir */
+/* capa: a arte da série inteira, em 16:9 e sem corte; o arquivo tem 1280px, e a coluna col-lg-7
+   fica bem abaixo disso, então a imagem não é ampliada e não perde nitidez */
 .capa-foto {
     display: block;
     width: 100%;
-    aspect-ratio: 21 / 9;
-    max-height: 26rem;
-    object-fit: cover;
-    object-position: center 30%;
+    height: auto;
+    aspect-ratio: 16 / 9;
     border-radius: var(--bs-border-radius-lg);
-}
-
-@media (max-width: 767.98px) {
-    .capa-foto {
-        aspect-ratio: 16 / 10;
-    }
 }
 
 /* rótulo acima dos títulos ("O blog da série", "Personagens"...) */
