@@ -573,9 +573,37 @@ h1, h2, h3, h4, h5, h6,
     background-color: var(--tvd-superficie);
 }
 
+/* "Ver os personagens →" e os outros links dos posts: o mesmo sublinhado animado do menu,
+   que cresce do centro para os lados no hover e no foco do teclado */
 .post .mais {
+    position: relative;
+    display: inline-block;
     font-weight: 700;
     text-decoration: none;
+}
+
+.post .mais::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: -.2rem;
+    left: 0;
+    height: 2px;
+    border-radius: 1px;
+    background-color: var(--tvd-link);
+    transform: scaleX(0);
+    transition: transform .25s ease;
+}
+
+.post .mais:hover::after,
+.post .mais:focus-visible::after {
+    transform: scaleX(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .post .mais::after {
+        transition: none;
+    }
 }
 
 /* modal (.modal-lg no desktop): foto ou iniciais com 200px em 4:5 */
