@@ -283,7 +283,7 @@ h1, h2, h3, h4, h5, h6,
     color: var(--tvd-texto-secundario);
 }
 
-/* card de recurso: o <button> do ui.js (ou o <a> da inicial) que envolve o .card */
+/* card de recurso: o <button> do ui.js que envolve o .card */
 .card-recurso {
     display: block;
     width: 100%;
@@ -363,14 +363,155 @@ h1, h2, h3, h4, h5, h6,
     text-transform: uppercase;
 }
 
-/* contagem e "Ver todos" nos atalhos da inicial */
-.contagem {
-    font-size: 2.25rem;
-    line-height: 1;
+/* ---------- página inicial em formato de blog ---------- */
+
+/* capa: a arte larga da série; no celular fica mais alta, para o elenco não sumir */
+.capa-foto {
+    display: block;
+    width: 100%;
+    aspect-ratio: 21 / 9;
+    max-height: 26rem;
+    object-fit: cover;
+    object-position: center 30%;
+    border-radius: var(--bs-border-radius-lg);
 }
 
-.card-recurso .ver-todos {
+@media (max-width: 767.98px) {
+    .capa-foto {
+        aspect-ratio: 16 / 10;
+    }
+}
+
+/* rótulo acima dos títulos ("O blog da série", "Personagens"...) */
+.meta {
     color: var(--tvd-link);
+    font-size: .8rem;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+}
+
+/* crédito embaixo das imagens de fora (TVmaze e Wikimedia Commons, que pede autor e licença) */
+.credito {
+    margin-top: .35rem;
+    color: var(--tvd-texto-secundario);
+    font-size: .75rem;
+}
+
+/* atalhos: cinco caixas com a contagem, numa linha a partir de 768px e em duas (3 + 2) abaixo disso;
+   só abaixo de 360px ficam duas por linha, porque "Personagens" não cabe numa coluna de três */
+.atalhos {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: .5rem;
+    padding: 0;
+}
+
+@media (max-width: 359.98px) {
+    .atalhos {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 768px) {
+    .atalhos {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+}
+
+.atalho {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: .75rem;
+    border: 1px solid var(--tvd-borda);
+    border-radius: var(--bs-border-radius-lg);
+    background-color: var(--tvd-superficie);
+    color: var(--tvd-texto);
+    text-decoration: none;
+    transition: border-color .15s;
+}
+
+.atalho:hover {
+    border-color: var(--tvd-link);
+    color: var(--tvd-texto);
+}
+
+.contagem {
+    font-size: 1.75rem;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+}
+
+.atalho-nome {
+    color: var(--tvd-texto-secundario);
+    font-size: .85rem;
+}
+
+/* posts: a imagem alterna de lado no computador (order-md-2) e fica em cima no celular */
+.feed {
+    display: grid;
+    gap: 2.5rem;
+}
+
+.post {
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid var(--tvd-borda);
+}
+
+.post:last-child {
+    padding-bottom: 0;
+    border-bottom: 0;
+}
+
+.post-midia {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0;
+    text-align: center;
+}
+
+/* imagem deitada em 4:3; foto e pôster (em pé) aparecem inteiros, com 280px de altura */
+.post-foto {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: var(--bs-border-radius-lg);
+}
+
+.post-foto.vertical {
+    width: auto;
+    max-width: 100%;
+    height: 280px;
+    aspect-ratio: auto;
+}
+
+/* a cena do episódio tem 250px de largura na API; maior que isso fica borrada */
+.post-foto.cena {
+    max-width: 375px;
+}
+
+/* sem foto na API: as iniciais ocupam o lugar da imagem (D5) */
+.post-midia .iniciais {
+    width: 100%;
+    max-width: 375px;
+    aspect-ratio: 4 / 3;
+    border-radius: var(--bs-border-radius-lg);
+    font-size: 3rem;
+}
+
+/* enquanto a imagem da API não chega, o espaço já fica reservado */
+.post-midia:empty {
+    aspect-ratio: 4 / 3;
+    border-radius: var(--bs-border-radius-lg);
+    background-color: var(--tvd-superficie);
+}
+
+.post .mais {
+    font-weight: 700;
+    text-decoration: none;
 }
 
 /* modal (.modal-lg no desktop): foto ou iniciais com 200px em 4:5 */

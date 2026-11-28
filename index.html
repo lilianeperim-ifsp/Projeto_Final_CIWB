@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- index.html: página inicial (apresentação da série e cards com a contagem de cada recurso). Dona: Liliane (PRs L1 e L2). -->
+<!-- index.html: página inicial em formato de blog (capa, atalhos com a contagem de cada recurso e posts). Dona: Liliane (PRs L1 e L2). -->
 <!-- o data-bs-theme="dark" é a reserva para quando o JavaScript não roda; o tema.js sobrescreve -->
 <html lang="pt-BR" data-bs-theme="dark">
 <head>
@@ -21,13 +21,99 @@
 
     <main class="container py-4">
 
-        <h1>Diários de Mystic Falls</h1>
+        <!-- capa do blog: a arte da série é do TVmaze, a mesma fonte das fotos da tvd-api (cópia em img/) -->
+        <section class="capa mb-4" aria-labelledby="titulo-site">
+            <figure class="mb-3">
+                <img class="capa-foto" src="img/capa-tvd.jpg" alt="Elenco da série de luto, com guarda-chuvas, diante de um caixão na chuva">
+                <figcaption class="credito">Imagem: <a href="https://www.tvmaze.com/shows/63/the-vampire-diaries">TVmaze</a></figcaption>
+            </figure>
 
-        <p class="lead mb-4">Personagens, episódios, temporadas, espécies e famílias de The Vampire Diaries, com os dados da tvd-api.</p>
+            <p class="meta mb-1">O blog da série</p>
+            <h1 id="titulo-site">Diários de Mystic Falls</h1>
+            <p class="lead mb-0">Tudo sobre The Vampire Diaries: quem é quem, o que acontece em cada episódio, de onde vêm as famílias da cidade e onde a série foi gravada.</p>
+        </section>
 
         <div id="estado"></div>
 
-        <ul id="atalhos" class="row row-cols-1 row-cols-sm-3 row-cols-lg-5 g-3 list-unstyled"></ul>
+        <!-- atalhos com a contagem de cada recurso, montados pelo inicio.js -->
+        <nav aria-label="Páginas do site">
+            <ul id="atalhos" class="atalhos list-unstyled mb-5"></ul>
+        </nav>
+
+        <!-- posts: o texto é fixo; as imagens com id="midia-..." vêm da tvd-api pelo inicio.js,
+             e as outras são fotos do Wikimedia Commons copiadas em img/; a licença CC BY-SA
+             exige o crédito com autor e licença embaixo de cada uma -->
+        <div class="feed">
+
+            <article class="post row g-4 align-items-center">
+                <figure class="col-md-5 post-midia">
+                    <img class="post-foto" src="img/elenco-comic-con.jpg" alt="Paul Wesley, Nina Dobrev e Ian Somerhalder, que fazem Stefan, Elena e Damon, num painel da Comic-Con" loading="lazy">
+                    <figcaption class="credito">Foto: <a href="https://commons.wikimedia.org/wiki/File:The_Vampire_Diaries_main_cast_by_Gage_Skidmore.jpg">Gage Skidmore</a>, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC BY-SA 2.0</a></figcaption>
+                </figure>
+                <div class="col-md-7">
+                    <p class="meta mb-1">Personagens</p>
+                    <h2 class="h3">Os protagonistas</h2>
+                    <p>Elena Gilbert perdeu os pais num acidente e tenta seguir em frente quando conhece Stefan Salvatore, o aluno novo. Logo depois chega o irmão dele, Damon. Ao redor dos três estão Caroline, Bonnie, Matt, Jeremy e Tyler.</p>
+                    <a class="mais" href="pages/personagens.html">Ver os personagens →</a>
+                </div>
+            </article>
+
+            <article class="post row g-4 align-items-center">
+                <figure class="col-md-5 order-md-2 post-midia" id="midia-episodes"></figure>
+                <div class="col-md-7">
+                    <p class="meta mb-1">Episódios</p>
+                    <h2 class="h3">Onde tudo começou</h2>
+                    <p>O primeiro episódio foi ao ar em 10/09/2009, e o último, em 10/03/2017. Cada um dos 171 episódios tem resumo, direção, roteiro, data de exibição e audiência nos Estados Unidos.</p>
+                    <a class="mais" href="pages/episodios.html">Ver os episódios →</a>
+                </div>
+            </article>
+
+            <article class="post row g-4 align-items-center">
+                <figure class="col-md-5 post-midia" id="midia-seasons"></figure>
+                <div class="col-md-7">
+                    <p class="meta mb-1">Temporadas</p>
+                    <h2 class="h3">Um vilão por temporada</h2>
+                    <p>Katherine, Klaus, Silas, Kai e, no fim, as sereias. Cada temporada tem pôster, período de exibição e a lista dos episódios, em ordem.</p>
+                    <a class="mais" href="pages/temporadas.html">Ver as temporadas →</a>
+                </div>
+            </article>
+
+            <article class="post row g-4 align-items-center">
+                <figure class="col-md-5 order-md-2 post-midia" id="midia-characters"></figure>
+                <div class="col-md-7">
+                    <p class="meta mb-1">Espécies</p>
+                    <h2 class="h3">Mais que vampiros</h2>
+                    <p>Humanos, vampiros, bruxas, lobisomens, híbridos e doppelgängers. Um personagem pode ter mais de uma: Elena é humana, doppelgänger e, depois, vampira.</p>
+                    <a class="mais" href="pages/especies.html">Ver as espécies →</a>
+                </div>
+            </article>
+
+            <article class="post row g-4 align-items-center">
+                <figure class="col-md-5 post-midia">
+                    <img class="post-foto" src="img/covington-antiga.png" alt="Foto antiga da praça central de Covington, na Geórgia, cheia de gente e de carros do começo do século 20" loading="lazy">
+                    <figcaption class="credito">Foto: <a href="https://commons.wikimedia.org/wiki/File:Covington_Ga_Town_Square_Circa_1900s.png">Historic Hidden Georgia</a>, <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a></figcaption>
+                </figure>
+                <div class="col-md-7">
+                    <p class="meta mb-1">Famílias</p>
+                    <h2 class="h3">As famílias fundadoras</h2>
+                    <p>Salvatore, Gilbert, Lockwood, Forbes e Fell fundaram a cidade e guardam o segredo dos vampiros há gerações. Ao lado delas estão os Bennett, os Mikaelson e as Petrova.</p>
+                    <a class="mais" href="pages/familias.html">Ver as famílias →</a>
+                </div>
+            </article>
+
+            <article class="post row g-4 align-items-center">
+                <figure class="col-md-5 order-md-2 post-midia">
+                    <img class="post-foto" src="img/covington-praca.jpg" alt="Praça central de Covington, na Geórgia, com o tribunal ao fundo" loading="lazy">
+                    <figcaption class="credito">Foto: <a href="https://commons.wikimedia.org/wiki/File:Covington_square.JPG">Haha169</a>, <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a></figcaption>
+                </figure>
+                <div class="col-md-7">
+                    <p class="meta mb-1">Bastidores</p>
+                    <h2 class="h3">A Mystic Falls de verdade</h2>
+                    <p>As cenas da cidade foram gravadas em Covington, na Geórgia. A praça do centro, com o tribunal e as lojas antigas, é a mesma que aparece nos festivais e nas festas de fundação da série.</p>
+                </div>
+            </article>
+
+        </div>
 
     </main>
 

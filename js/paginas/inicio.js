@@ -1,5 +1,6 @@
-// js/paginas/inicio.js: página inicial. Dona: Liliane (PRs L1 e L2).
-// cinco atalhos com a contagem de cada recurso, vinda do count da primeira página (D1)
+// js/paginas/inicio.js: página inicial em formato de blog. Dona: Liliane (PRs L1 e L2).
+// atalhos com a contagem de cada recurso, vinda do count da primeira página (D1),
+// e as imagens dos posts que vêm da tvd-api (cena do Pilot, pôster da Temporada 1 e foto da Elena)
 
 // recursos da tvd-api, na ordem do menu; o arquivo é relativo à raiz do site
 const ATALHOS = [
@@ -23,7 +24,6 @@ window.onload = async function(){
     for (let atalho of ATALHOS){
 
         const li = document.createElement('li');
-        li.className = 'col';
         li.appendChild(criarAtalho(atalho));
 
         lista.appendChild(li);
@@ -55,6 +55,9 @@ window.onload = async function(){
         }
         else{
             contagem.textContent = jsonPagina.count;
+
+            // o primeiro item da página ilustra o post do recurso, quando ele tem imagem da API
+            montarMidiaPost(ATALHOS[i].recurso, jsonPagina.results[0]);
         }
     }
 
@@ -67,40 +70,64 @@ window.onload = async function(){
 };
 
 
-// card que é um link para a página do recurso: contagem, nome e "Ver todos"
-// dentro do <a> ficam só <span>, como nos cards do ui.js
+// atalho compacto: a contagem em cima e o nome do recurso embaixo, com link para a página
 function criarAtalho(atalho){
 
     const link = document.createElement('a');
-    link.className = 'card-recurso';
+    link.className = 'atalho';
     link.href = atalho.arquivo;
-
-    const card = document.createElement('span');
-    card.className = 'card';
-
-    const corpo = document.createElement('span');
-    corpo.className = 'card-body d-block';
 
     // começa com reticências e recebe o count quando a resposta chega
     const contagem = document.createElement('span');
-    contagem.className = 'contagem d-block mb-2';
+    contagem.className = 'contagem';
     contagem.id = `contagem-${atalho.recurso}`;
     contagem.textContent = '…';
 
     const titulo = document.createElement('span');
-    titulo.className = 'card-title h5 d-block';
+    titulo.className = 'atalho-nome';
     titulo.textContent = atalho.titulo;
 
-    const verTodos = document.createElement('span');
-    verTodos.className = 'card-text d-block ver-todos';
-    verTodos.textContent = 'Ver todos';
-
-    corpo.appendChild(contagem);
-    corpo.appendChild(titulo);
-    corpo.appendChild(verTodos);
-
-    card.appendChild(corpo);
-    link.appendChild(card);
+    link.appendChild(contagem);
+    link.appendChild(titulo);
 
     return link;
+}
+
+
+// coloca a imagem do primeiro item no <figure id="midia-recurso"> do post
+// characters → foto da Elena (post de Espécies), episodes → cena do Pilot, seasons → pôster da Temporada 1
+function montarMidiaPost(recurso, item){
+
+    const figura = document.querySelector(`#midia-${recurso}`);
+
+    // espécies e famílias não têm imagem na API, e os posts delas usam fotos fixas no HTML
+    if (figura === null || item === undefined){
+        return;
+    }
+
+    let nome = item.name;
+    let alt = `Foto de ${item.name}`;
+    let formato = 'vertical';
+
+    if (recurso === 'episodes'){
+        nome = item.title;
+        alt = `Cena do episódio ${item.title}`;
+        formato = 'cena';
+    }
+    else if (recurso === 'seasons'){
+        alt = `Pôster da ${item.name}`;
+    }
+
+    // o criarFotoDetalhe do ui.js já troca a foto pelas iniciais quando ela falta ou não carrega (D5)
+    const foto = criarFotoDetalhe(item.image, alt, nome);
+
+    // foto e pôster são em pé ('vertical'); a cena do episódio é deitada e pequena ('cena')
+    // sem imagem, o que volta são as iniciais, que já têm o tamanho certo no style.css
+    if (item.image !== null){
+        foto.classList.add('post-foto');
+        foto.classList.add(formato);
+    }
+
+    figura.innerHTML = '';
+    figura.appendChild(foto);
 }
