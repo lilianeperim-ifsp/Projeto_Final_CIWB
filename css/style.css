@@ -406,13 +406,12 @@ h1, h2, h3, h4, h5, h6,
 
 /* ---------- página inicial em formato de blog ---------- */
 
-/* capa: a arte da série inteira, em 16:9 e sem corte; o arquivo tem 1280px, e a coluna col-lg-7
-   fica bem abaixo disso, então a imagem não é ampliada e não perde nitidez */
+/* capa (inicial e Personagens): a imagem inteira, sem corte; a proporção vem do width e do height do <img>,
+   e a coluna col-lg-7 fica abaixo da largura do arquivo, então a imagem não é ampliada e não perde nitidez */
 .capa-foto {
     display: block;
     width: 100%;
     height: auto;
-    aspect-ratio: 16 / 9;
     border-radius: var(--bs-border-radius-lg);
 }
 
@@ -620,16 +619,26 @@ h1, h2, h3, h4, h5, h6,
     background-color: var(--tvd-superficie);
 }
 
-/* "Ver os personagens →" e os outros links dos posts: o mesmo sublinhado animado do menu,
-   que cresce do centro para os lados no hover e no foco do teclado */
-.post .mais {
+/* "Ver os personagens →" (posts da inicial) e "Ver perfil →" (destaques de Personagens): o mesmo
+   sublinhado animado do menu, que cresce do centro para os lados no hover e no foco do teclado */
+.post .mais,
+.destaque .mais {
     position: relative;
     display: inline-block;
     font-weight: 700;
     text-decoration: none;
 }
 
-.post .mais::after {
+/* o "Ver perfil →" é um <button> (abre o modal), com cara de link */
+.destaque .mais {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--tvd-link);
+}
+
+.post .mais::after,
+.destaque .mais::after {
     content: "";
     position: absolute;
     right: 0;
@@ -643,14 +652,94 @@ h1, h2, h3, h4, h5, h6,
 }
 
 .post .mais:hover::after,
-.post .mais:focus-visible::after {
+.post .mais:focus-visible::after,
+.destaque .mais:hover::after,
+.destaque .mais:focus-visible::after {
     transform: scaleX(1);
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .post .mais::after {
+    .post .mais::after,
+    .destaque .mais::after {
         transition: none;
     }
+}
+
+
+/* ---------- página de Personagens em formato de blog ---------- */
+
+/* cada seção ("Os protagonistas", "Todos os personagens") separada por uma linha, como os posts da inicial */
+.secao-pagina {
+    margin-bottom: 2.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--tvd-borda);
+}
+
+/* destaque: foto de 120px ao lado do texto; a foto da API tem 210px de largura,
+   então maior que isso ela ficaria borrada */
+.destaque {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    height: 100%;
+    padding: 1rem;
+    border: 1px solid var(--tvd-borda);
+    border-radius: var(--bs-border-radius-lg);
+    background-color: var(--tvd-superficie);
+}
+
+.destaque .foto-detalhe,
+.destaque .iniciais {
+    flex-shrink: 0;
+    width: 120px;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    border-radius: var(--bs-border-radius);
+    font-size: 2rem;
+}
+
+.destaque-texto {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: .25rem;
+    min-width: 0;
+}
+
+/* etiquetas: as espécies com contorno dourado; a família com fundo vinho, para se diferenciar */
+.etiquetas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .3rem;
+    margin-block: .35rem;
+}
+
+.etiqueta {
+    padding: .05rem .5rem;
+    border: 1px solid var(--tvd-link);
+    border-radius: 50rem;
+    color: var(--tvd-link);
+    font-size: .7rem;
+    font-weight: 700;
+    letter-spacing: .04em;
+    line-height: 1.5;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.etiqueta-familia {
+    border-color: var(--tvd-destaque);
+    background-color: var(--tvd-destaque);
+    color: var(--tvd-texto-destaque);
+}
+
+/* trecho da descrição no card: duas linhas, com reticências; a descrição inteira fica no modal */
+.trecho {
+    display: -webkit-box;
+    overflow: hidden;
+    font-size: .875rem;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
 }
 
 /* modal (.modal-lg no desktop): foto ou iniciais com 200px em 4:5 */
