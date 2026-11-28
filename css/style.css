@@ -441,6 +441,36 @@ h1, h2, h3, h4, h5, h6,
     font-size: .85rem;
 }
 
+/* sobre a série: o resumo com a largura boa de leitura e a ficha técnica numa caixa ao lado */
+.sobre-serie {
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid var(--tvd-borda);
+}
+
+.sobre-serie p {
+    max-width: 65ch;
+}
+
+/* ficha: rótulo à esquerda e valor à direita, em duas colunas */
+.ficha {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: .6rem 1.25rem;
+    padding: 1.25rem 1.5rem;
+    border: 1px solid var(--tvd-borda);
+    border-radius: var(--bs-border-radius-lg);
+    background-color: var(--tvd-superficie);
+}
+
+.ficha dt {
+    color: var(--tvd-texto-secundario);
+    font-weight: 600;
+}
+
+.ficha dd {
+    margin: 0;
+}
+
 /* posts: a imagem alterna de lado no computador (order-md-2) e fica em cima no celular */
 .feed {
     display: grid;
