@@ -142,12 +142,71 @@ h1, h2, h3, h4, h5, h6,
     font-weight: 600;
 }
 
-/* botão de tema numa linha só: entre 992 e 1200px, com os seis links, "Modo claro" quebrava em duas;
-   nessa faixa os links ficam com menos espaço dos lados, para o botão caber sem passar da borda */
+/* botão de tema: interruptor com trilho arredondado e a bolinha que desliza;
+   sol à esquerda no modo claro, lua à direita no modo escuro, nas cores da paleta */
 #botao-tema {
-    white-space: nowrap;
+    --tvd-interruptor: linear-gradient(135deg, #d9822b, #8a1526);
+    position: relative;
+    width: 3.5rem;
+    height: 1.75rem;
+    padding: 0;
+    border: 2px solid transparent;
+    border-radius: 50rem;
+    /* o primeiro fundo pinta o trilho, e o segundo aparece só na borda, com o degradê */
+    background: linear-gradient(var(--tvd-superficie), var(--tvd-superficie)) padding-box,
+                var(--tvd-interruptor) border-box;
+    flex-shrink: 0;
 }
 
+[data-bs-theme="dark"] #botao-tema {
+    --tvd-interruptor: linear-gradient(135deg, #d9b26a, #c0304a);
+}
+
+/* a bolinha é um pouco maior que o trilho e passa da borda dos dois lados */
+#botao-tema .bolinha {
+    position: absolute;
+    top: 50%;
+    left: -.25rem;
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    margin-top: -1rem;
+    border-radius: 50%;
+    background: var(--tvd-interruptor);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, .35);
+    transition: transform .2s;
+}
+
+/* no modo escuro, a bolinha vai para a direita: largura do trilho (3.5rem) menos as bordas (4px),
+   mais o quarto de rem que passa de cada lado, menos a bolinha (2rem) */
+[data-bs-theme="dark"] #botao-tema .bolinha {
+    transform: translateX(calc(2rem - 4px));
+}
+
+#botao-tema .bolinha img {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+/* só o ícone do tema atual aparece */
+#botao-tema .icone-lua,
+[data-bs-theme="dark"] #botao-tema .icone-sol {
+    display: none;
+}
+
+[data-bs-theme="dark"] #botao-tema .icone-lua {
+    display: block;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #botao-tema .bolinha {
+        transition: none;
+    }
+}
+
+/* entre 992 e 1200px, com os seis links e o botão de tema, os links ficam com menos espaço dos lados,
+   para o menu caber sem passar da borda */
 @media (min-width: 992px) and (max-width: 1199.98px) {
     #menu {
         --bs-navbar-nav-link-padding-x: .5rem;
