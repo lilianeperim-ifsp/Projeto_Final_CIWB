@@ -126,6 +126,27 @@ h1, h2, h3, h4, h5, h6,
     font-family: var(--tvd-fonte-titulo);
 }
 
+/* cabeçalho fixo no topo durante a rolagem, em todas as páginas; o z-index 1030 é o do .sticky-top
+   do Bootstrap, abaixo dos modais (1055), que continuam por cima do menu */
+body > header {
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+}
+
+/* quando o Tab rola a página até um item, ele não fica escondido atrás do cabeçalho fixo */
+html {
+    scroll-padding-top: 5rem;
+}
+
+/* menu sanduíche aberto: se passar da altura da tela (celular deitado), os links rolam por dentro */
+@media (max-width: 991.98px) {
+    #menu-links {
+        max-height: calc(100vh - 4.5rem);
+        overflow-y: auto;
+    }
+}
+
 /* menu: cores da navbar apontando para a paleta; as variáveis ficam no #menu,
    porque é nele que o Bootstrap aplica as da .navbar */
 #menu {
