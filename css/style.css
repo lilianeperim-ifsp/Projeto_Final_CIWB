@@ -678,6 +678,7 @@ h1, h2, h3, h4, h5, h6,
 /* destaque: foto de 120px ao lado do texto; a foto da API tem 210px de largura,
    então maior que isso ela ficaria borrada */
 .destaque {
+    --tvd-sombra: rgba(42, 26, 20, .14);
     display: flex;
     gap: 1rem;
     align-items: flex-start;
@@ -686,6 +687,45 @@ h1, h2, h3, h4, h5, h6,
     border: 1px solid var(--tvd-borda);
     border-radius: var(--bs-border-radius-lg);
     background-color: var(--tvd-superficie);
+    cursor: pointer;
+    transition: border-color .2s, box-shadow .2s, transform .2s;
+}
+
+[data-bs-theme="dark"] .destaque {
+    --tvd-sombra: rgba(0, 0, 0, .5);
+}
+
+/* hover no destaque (o artigo inteiro abre o modal) e foco do teclado no "Ver perfil →":
+   sobe com sombra, borda e nome dourados, e o sublinhado do "Ver perfil →" cresce */
+.destaque:hover,
+.destaque:has(.mais:focus-visible) {
+    border-color: var(--tvd-link);
+    box-shadow: 0 2px 6px var(--tvd-sombra), 0 12px 28px var(--tvd-sombra);
+    transform: translateY(-2px);
+}
+
+.destaque h3 {
+    transition: color .2s;
+}
+
+.destaque:hover h3,
+.destaque:has(.mais:focus-visible) h3 {
+    color: var(--tvd-link);
+}
+
+.destaque:hover .mais::after {
+    transform: scaleX(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .destaque {
+        transition: none;
+    }
+
+    .destaque:hover,
+    .destaque:has(.mais:focus-visible) {
+        transform: none;
+    }
 }
 
 .destaque .foto-detalhe,

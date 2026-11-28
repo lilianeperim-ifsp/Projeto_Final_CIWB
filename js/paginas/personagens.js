@@ -135,14 +135,16 @@ function mostrarDestaques(lista){
         descricao.className = 'mb-2';
         descricao.textContent = personagem.description;
 
-        // botão com cara de link: abre o mesmo modal dos cards (RF05)
+        // botão com cara de link, para o teclado (Tab e Enter); o clique nele sobe para o artigo,
+        // que abre o mesmo modal dos cards (RF05)
         const botVer = document.createElement('button');
         botVer.type = 'button';
         botVer.className = 'mais';
         botVer.textContent = 'Ver perfil →';
         botVer.setAttribute('aria-label', `Ver perfil de ${personagem.name}`);
 
-        botVer.onclick = function(){
+        // o destaque inteiro é clicável, como os cards da grade
+        artigo.onclick = function(){
             abrirDetalhesPersonagem(personagem);
         };
 
